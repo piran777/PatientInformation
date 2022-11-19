@@ -1,10 +1,10 @@
 CREATE TABLE `patient_information`.`medication` (
   `name` VARCHAR(100) NOT NULL,
-  `id` INT NOT NULL ,
+  `id` INT NOT NULL,
   PRIMARY KEY (`id`));
   CREATE TABLE `patient_information`.`healthproblem` (
   `type` VARCHAR(100) NOT NULL,
-  `id` INT NOT NULL ,
+  `id` INT NOT NULL,
   `startDate` DATE NOT NULL,
   `endDate` DATE NOT NULL,
   `PatientHealthCardNumber` INT NOT NULL,
@@ -97,9 +97,9 @@ CREATE TABLE `patient_information`.`symptom` (
   `appointmentID` INT NOT NULL,
   PRIMARY KEY (`appointmentID`, `type`));
 CREATE TABLE `patient_information`.`appointment` (
-  `startDateTime` DATETIME(22) NOT NULL,
-  `endDateTime` DATETIME(22) NOT NULL,
-  `notes` VARCHAR(300) NOT NULL,
+  `startDateTime` DATETIME(6) NOT NULL,
+  `endDateTime` DATETIME(6) NOT NULL,
+  `notes` VARCHAR(300) NOT NULL ,
   `reasonforAppointment` VARCHAR(300) NOT NULL,
   `familyDoctorMINC` INT NOT NULL,
   `patientHealthCardNumber` INT NOT NULL,
@@ -146,3 +146,6 @@ CREATE TABLE `patient_information`.`surgery` (
   `PatientHealthCardNumber` INT NOT NULL,
   `id` INT NOT NULL,
   PRIMARY KEY (`id`));
+  
+  ALTER TABLE `surgery`
+MODIFY `id` INT NOT NULL AUTO_INCREMENT;
