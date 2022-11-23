@@ -11,8 +11,8 @@ function generateHealthProblem(patientBirthDate, patientHealthCardNumber) {
     return {
         patientHealthCardNumber : patientHealthCardNumber,
         type : illnessSymptoms[getRandomInt(0, illnessSymptoms.length-1)]["name"],
-        startDate : startDate,
-        endDate : endDate
+        startDate : startDate.toISOString().split('T')[0],
+        endDate : endDate.toISOString().split('T')[0]
     }
 }
 
