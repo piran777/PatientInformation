@@ -52,12 +52,12 @@ CREATE TABLE patient_information.healthproblemmedicationusage (
   PRIMARY KEY (MINC));
  
  CREATE TABLE patient_information.appointment (
-  startDateTime DATETIME(6) NOT NULL,
-  endDateTime DATETIME(6) NOT NULL,
-  notes VARCHAR(300) NOT NULL ,
-  reasonforAppointment VARCHAR(300) NOT NULL,
-  familyDoctorMINC VARCHAR(100) NOT NULL,
-  patientHealthCardNumber VARCHAR(100) NOT NULL,
+  startDateTime DATETIME(2) NOT NULL DEFAULT '2022-01-01 00:00' ,
+  endDateTime DATETIME(2) NOT NULL DEFAULT '2022-12-31 00:00',
+  notes VARCHAR(300) NOT NULL DEFAULT 'NA',
+  reasonforAppointment VARCHAR(300) NOT NULL DEFAULT 'NA',
+  familyDoctorMINC VARCHAR(100) NOT NULL DEFAULT 'NA',
+  patientHealthCardNumber VARCHAR(100) NOT NULL DEFAULT 'NA',
   id INT NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (id),
   FOREIGN KEY (familyDoctorMINC) REFERENCES familydoctor(MINC)
@@ -65,6 +65,8 @@ CREATE TABLE patient_information.healthproblemmedicationusage (
   FOREIGN KEY (patientHealthCardNumber) REFERENCES patient(healthCardNumber)
   ON UPDATE CASCADE
   ON DELETE CASCADE);
+ 
+ 
  
   CREATE TABLE patient_information.test (
   type VARCHAR(100) NOT NULL,
@@ -123,7 +125,7 @@ CREATE TABLE patient_information.family (
   ON UPDATE CASCADE);
   
   CREATE TABLE patient_information.healthproblemstatus (
-  dateTime DATETIME(6) NOT NULL,
+  dateTime DATETIME(2) NOT NULL,
   status VARCHAR(100) NOT NULL,
   HealthProblemID INT NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (dateTime, HealthProblemID),
