@@ -197,10 +197,6 @@ CREATE TABLE patient_information.healthrisk (
   FOREIGN KEY (patientHealthCardNumber) REFERENCES patient(healthCardNumber)
   ON UPDATE CASCADE);
 
-CREATE TABLE patient_information.symptomstreatment (
-  symptom VARCHAR(500) NOT NULL,
-  treatment VARCHAR(500) NOT NULL,
-  PRIMARY KEY (symptom));
 
 CREATE TABLE patient_information.healthproblemspecilizationdata (
   healthProblem VARCHAR(500) NOT NULL,
