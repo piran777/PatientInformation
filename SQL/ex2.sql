@@ -48,7 +48,7 @@ CREATE TABLE patient_information.healthproblemmedicationusage (
   firstName VARCHAR(30) NOT NULL,
   lastName VARCHAR(30) NOT NULL,
   email VARCHAR(50) NOT NULL,
-  phoneNo INT NOT NULL,
+  phoneNo BIGINT(10) NOT NULL,
   PRIMARY KEY (MINC));
  
  CREATE TABLE patient_information.appointment (
