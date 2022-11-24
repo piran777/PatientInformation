@@ -3,7 +3,7 @@ const path = require('path');
 
 let type = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../DataUsed/test.json')));
 
-function generateAppointment(notes, reasonforAppointment, FamilyDoctorMINC, PatientHealthCardNumber, ID, patientBirthDate) {
+function generateAppointment(notes, reasonforAppointment, FamilyDoctorMINC, PatientHealthCardNumber, patientBirthDate) {
     let startDate = new Date(getRandomInt(patientBirthDate.getFullYear(), 2021), getRandomInt(patientBirthDate.getMonth(), 11), getRandomInt(patientBirthDate.getDate(), 31));//max day being set as 31 is fine as the constructor will just go to the next month and "add" the extra days
     let endDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
 
