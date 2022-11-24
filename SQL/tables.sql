@@ -6,7 +6,7 @@ CREATE TABLE patient_information.medication (
   PRIMARY KEY (id));
   
   CREATE TABLE patient_information.patient (
-  healthCardNumber INT NOT NULL,
+  healthCardNumber VARCHAR(100) NOT NULL,
   firstName VARCHAR(100) NOT NULL,
   lastName VARCHAR(100) NOT NULL,
   dateOfBirth DATE NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE patient_information.medication (
   ethnicity VARCHAR(100) NOT NULL,
   preferredLanguage VARCHAR(100) NOT NULL,
   religion VARCHAR(100) NOT NULL,
-  phoneNo INT NOT NULL,
+  phoneNo BIGINT(10) NOT NULL,
   email VARCHAR(100) NOT NULL,
   address VARCHAR(200) NOT NULL,
   PRIMARY KEY (healthCardNumber));
@@ -25,7 +25,7 @@ CREATE TABLE patient_information.medication (
   id INT NOT NULL AUTO_INCREMENT,
   startDate DATE NOT NULL,
   endDate DATE NOT NULL,
-  PatientHealthCardNumber INT NOT NULL,
+  PatientHealthCardNumber VARCHAR(100) NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (PatientHealthCardNumber) REFERENCES patient (healthCardNumber)
   ON UPDATE CASCADE);
@@ -44,7 +44,7 @@ CREATE TABLE patient_information.healthproblemmedicationusage (
   ON UPDATE CASCADE);
  
  CREATE TABLE patient_information.familydoctor (
-  MINC INT NOT NULL,
+  MINC VARCHAR(100) NOT NULL,
   firstName VARCHAR(30) NOT NULL,
   lastName VARCHAR(30) NOT NULL,
   email VARCHAR(50) NOT NULL,
@@ -56,14 +56,15 @@ CREATE TABLE patient_information.healthproblemmedicationusage (
   endDateTime DATETIME(6) NOT NULL,
   notes VARCHAR(300) NOT NULL ,
   reasonforAppointment VARCHAR(300) NOT NULL,
-  familyDoctorMINC INT NOT NULL,
-  patientHealthCardNumber INT NOT NULL,
+  familyDoctorMINC VARCHAR(100) NOT NULL,
+  patientHealthCardNumber VARCHAR(100) NOT NULL,
   id INT NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (id),
   FOREIGN KEY (familyDoctorMINC) REFERENCES familydoctor(MINC)
   ON UPDATE CASCADE,
   FOREIGN KEY (patientHealthCardNumber) REFERENCES patient(healthCardNumber)
-  ON UPDATE CASCADE);
+  ON UPDATE CASCADE
+  ON DELETE CASCADE);
  
   CREATE TABLE patient_information.test (
   type VARCHAR(100) NOT NULL,
@@ -79,7 +80,7 @@ CREATE TABLE patient_information.healthproblemmedicationusage (
   value INT NOT NULL,
   unit INT NOT NULL,
   note VARCHAR(100) NOT NULL,
-  TestType VARCHAR(45) NOT NULL,
+  TestType VARCHAR(100) NOT NULL,
   AppointmentID INT NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (component, TestType, AppointmentID),
   FOREIGN KEY (TestType) REFERENCES test(type)
@@ -93,7 +94,7 @@ CREATE TABLE patient_information.healthproblemmedicationusage (
 CREATE TABLE patient_information.substance (
   type VARCHAR(100) NOT NULL,
   startDate DATE NOT NULL,
-  PatientHealthCardNumber INT NOT NULL,
+  PatientHealthCardNumber VARCHAR(100) NOT NULL,
   endDate DATE NOT NULL,
  PRIMARY KEY (type, startDate, PatientHealthCardNumber),
  FOREIGN KEY (PatientHealthCardNumber) REFERENCES patient(healthCardNumber)
@@ -101,8 +102,8 @@ CREATE TABLE patient_information.substance (
 
 CREATE TABLE patient_information.family (
   relationshipTopatient VARCHAR(100) NOT NULL,
-  patientID INT NOT NULL,
-  familyID INT NOT NULL,
+  patientID VARCHAR(100) NOT NULL,
+  familyID VARCHAR(100) NOT NULL,
   PRIMARY KEY (patientID, familyID),
   FOREIGN KEY (patientID) REFERENCES patient(healthCardNumber)
   ON UPDATE CASCADE ,
@@ -116,7 +117,7 @@ CREATE TABLE patient_information.family (
   lot VARCHAR(100) NOT NULL,
   dosage INT NOT NULL,
   site VARCHAR(100) NOT NULL,
-  PatientHealthCardNumber INT NOT NULL,
+  PatientHealthCardNumber VARCHAR(100) NOT NULL,
   PRIMARY KEY (type, date, PatientHealthCardNumber),
   FOREIGN KEY (PatientHealthCardNumber) REFERENCES patient(healthCardNumber)
   ON UPDATE CASCADE);
@@ -142,25 +143,25 @@ CREATE TABLE patient_information.symptomtreatmentdata (
   PRIMARY KEY (symptom, treatment));
 
 CREATE TABLE patient_information.doctor (
-  MINC INT NOT NULL,
+  MINC VARCHAR(100) NOT NULL,
   firstName VARCHAR(40) NOT NULL,
   lastName VARCHAR(40) NOT NULL,
   email VARCHAR(100) NOT NULL,
-  phoneNo INT NOT NULL,
+  phoneNo BIGINT(10) NOT NULL,
   PRIMARY KEY (MINC));
   
   CREATE TABLE patient_information.otherdoctor (
-  MINC INT NOT NULL,
+  MINC VARCHAR(100) NOT NULL,
   firstName VARCHAR(30) NOT NULL,
   lastName VARCHAR(30) NOT NULL,
   email VARCHAR(50) NOT NULL,
-  phoneNo INT NOT NULL,
+  phoneNo BIGINT(100) NOT NULL,
   specialization VARCHAR(100) NOT NULL,
   PRIMARY KEY (MINC));
 
 CREATE TABLE patient_information.referral (
   reason VARCHAR(300) NOT NULL,
-  otherDoctorMINC INT NOT NULL,
+  otherDoctorMINC VARCHAR(100) NOT NULL,
   appointmentID INT NOT NULL,
   PRIMARY KEY (reason, otherDoctorMINC, appointmentID),
   FOREIGN KEY (otherDoctorMINC) REFERENCES otherdoctor(MINC)
@@ -179,8 +180,8 @@ CREATE TABLE patient_information.symptom (
 CREATE TABLE patient_information.familydoctorpatientassignment (
   startDate DATE NOT NULL,
   endDate DATE NOT NULL,
-  patientHealthCardNumber INT NOT NULL,
-  familyDoctorMINC INT NOT NULL,
+  patientHealthCardNumber VARCHAR(100) NOT NULL,
+  familyDoctorMINC VARCHAR(100) NOT NULL,
   PRIMARY KEY (familyDoctorMINC, patientHealthCardNumber, startDate),
   FOREIGN KEY (patientHealthCardNumber) REFERENCES patient(healthCardNumber)
   ON UPDATE CASCADE,
@@ -191,7 +192,7 @@ CREATE TABLE patient_information.healthrisk (
   resultingHealthProblem VARCHAR(500) NOT NULL,
   probability INT NOT NULL,
   overThreshold INT NOT NULL,
-  patientHealthCardNumber INT NOT NULL,
+  patientHealthCardNumber VARCHAR(100) NOT NULL,
   PRIMARY KEY (resultingHealthProblem, patientHealthCardNumber),
   FOREIGN KEY (patientHealthCardNumber) REFERENCES patient(healthCardNumber)
   ON UPDATE CASCADE);
@@ -211,8 +212,8 @@ CREATE TABLE patient_information.surgery (
   date DATE NOT NULL,
   type VARCHAR(500) NOT NULL,
   location VARCHAR(200) NOT NULL,
-  DoctorResponsibleMINC INT NOT NULL,
-  PatientHealthCardNumber INT NOT NULL,
+  DoctorResponsibleMINC VARCHAR(100) NOT NULL,
+  PatientHealthCardNumber VARCHAR(100) NOT NULL,
   id INT NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY(DoctorResponsibleMINC) REFERENCES doctor(MINC)
