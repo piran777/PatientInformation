@@ -3,7 +3,7 @@ const path = require('path');
 
 let symptom = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../DataUsed/illnessSymptoms.json')));
 
-function generateOtherDoctor(appointmentID) {
+function generateSymptoms(appointmentID) {
 
     return {
         appointmentID: appointmentID,
@@ -25,5 +25,5 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-
-console.log(generateOtherDoctor(1));
+exports.generateSurgery = generateSurgery;
+console.log(generateSymptoms(1));

@@ -34,5 +34,4 @@ function getRandomInt(min, max) {
     
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
-console.log(generateAppointment("He is hurt", "Broken leg", "CAMD12345679", "233422332as", new Date(2002, 3, 3)));
+exports.generateAppointment = generateAppointment;

@@ -59,3 +59,5 @@ function generatePostalZipCode(country) {
         return String(padZeros(getRandomInt(0, 99999), 5)) + "-" + String(padZeros(getRandomInt(0, 9999), 4));
     }
 }
+
+exports.generateSurgery = generateSurgery;

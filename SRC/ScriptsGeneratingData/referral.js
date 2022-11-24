@@ -9,4 +9,5 @@ function generateReferral(reason, OtherDoctorMINC, AppointmentID) {
     }
 }
 
-console.log(generateReferral("He broke his arm", "CAMD12345679", 1));
+exports.generateReferral = generateReferral;
+//console.log(generateReferral("He broke his arm", "CAMD12345679", 1));

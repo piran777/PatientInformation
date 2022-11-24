@@ -29,4 +29,6 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-console.log(generateHealthProblem(new Date(2002, 3, 3), "233422332as"));
+exports.generateHealthProblem = generateHealthProblem;
+
+// console.log(generateHealthProblem(new Date(2002, 3, 3), "233422332as"));

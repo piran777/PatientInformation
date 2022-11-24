@@ -22,5 +22,6 @@ function generateIllnessProbabilityData() {
     }
     return out;
 }
+exports.generateIllnessProbabilityData = generateIllnessProbabilityData;
 
-console.log(generateIllnessProbabilityData());
+// console.log(generateIllnessProbabilityData());

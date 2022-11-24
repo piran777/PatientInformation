@@ -2,14 +2,20 @@ const fs = require('fs');
 const path = require('path');
 
 let treatments = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../DataUsed/treatment.json')));
+let illnessSymptoms = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../DataUsed/illnessSymptoms.json')));
 
-function generateOtherDoctor(symptom) {
+//these symptoms don't match their actual treatment as we couldn't find any data that has this already matched, so they are randomized
+function generateSymptomTreatmentData() {
+    let out = [];
 
-    return {
-        symptom: symptom,
-        treatment: treatments[getRandomInt(0,treatments.length-1)]["treatment"]
-       
+    for(let i = 0; i < illnessSymptoms.length; i++) {
+        out.push({
+            symptom: illnessSymptoms[i]["symptoms"],
+            treatment: treatments[getRandomInt(0,treatments.length-1)]["treatment"]
+        });
     }
+    
+    return out;
 }
 
 function getRandomInt(min, max) {
@@ -25,5 +31,5 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-
-console.log(generateOtherDoctor("merily"));
+exports.generateSymptomTreatmentData = generateSymptomTreatmentData;
+//  console.log(generateSymptomTreatmentData());
