@@ -3,7 +3,7 @@ const path = require('path');
 
 let type = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../DataUsed/test.json')));
 
-function generateAppointment(notes, reasonforAppointment, FamilyDoctorMINC, PatientHealthCardNumber, ID, patientBirthDate) {
+function generateAppointment(notes, reasonforAppointment, FamilyDoctorMINC, PatientHealthCardNumber, patientBirthDate) {
     let startDate = new Date(getRandomInt(patientBirthDate.getFullYear(), 2021), getRandomInt(patientBirthDate.getMonth(), 11), getRandomInt(patientBirthDate.getDate(), 31));//max day being set as 31 is fine as the constructor will just go to the next month and "add" the extra days
     let endDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
 
@@ -13,13 +13,12 @@ function generateAppointment(notes, reasonforAppointment, FamilyDoctorMINC, Pati
     endDate.setMinutes(getRandomInt(0,59));
 
     return {
-        startDateTime: startDate,
-        endDateTime: endDate,
+        startDateTime: startDate.toISOString().replace('T', ' ').replace('Z', '').replace(':00.000', ''),
+        endDateTime: endDate.toISOString().replace('T', ' ').replace('Z', '').replace(':00.000', ''),
         notes: notes,
         reasonforAppointment: reasonforAppointment,
         FamilyDoctorMINC: FamilyDoctorMINC,
-        PatientHealthCardNumber: PatientHealthCardNumber,
-        ID: ID
+        PatientHealthCardNumber: PatientHealthCardNumber
     }
 }
 
@@ -36,4 +35,4 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-console.log(generateAppointment("He is hurt", "Broken leg", "CAMD12345679", "233422332as", 1, new Date(2002, 3, 3)));
+console.log(generateAppointment("He is hurt", "Broken leg", "CAMD12345679", "233422332as", new Date(2002, 3, 3)));

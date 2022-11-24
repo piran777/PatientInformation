@@ -10,8 +10,8 @@ function generateSubstance(patientBirthDate, patientHealthCardNumber) {
 
     return {
         type: medicine[getRandomInt(0, medicine.length - 1)].Name,
-        startDate: startDate,
-        endDate: endDate,
+        startDate: startDate.toISOString().split('T')[0],
+        endDate: endDate.toISOString().split('T')[0],
         PatientHealthCardNumber: patientHealthCardNumber
     }
 }
