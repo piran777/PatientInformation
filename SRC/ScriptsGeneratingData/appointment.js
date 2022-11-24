@@ -13,8 +13,8 @@ function generateAppointment(notes, reasonforAppointment, FamilyDoctorMINC, Pati
     endDate.setMinutes(getRandomInt(0,59));
 
     return {
-        startDateTime: startDate,
-        endDateTime: endDate,
+        startDateTime: startDate.toISOString().replace('T', ' ').replace('Z', ''),
+        endDateTime: endDate.toISOString().replace('T', ' ').replace('Z', ''),
         notes: notes,
         reasonforAppointment: reasonforAppointment,
         FamilyDoctorMINC: FamilyDoctorMINC,
