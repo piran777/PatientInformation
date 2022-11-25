@@ -6,17 +6,17 @@ CREATE TABLE patient_information.medication (
   PRIMARY KEY (id));
   
   CREATE TABLE patient_information.patient (
-  healthCardNumber VARCHAR(100) NOT NULL,
-  firstName VARCHAR(100) NOT NULL,
-  lastName VARCHAR(100) NOT NULL,
-  dateOfBirth DATE NOT NULL,
-  gender VARCHAR(100) NOT NULL,
-  ethnicity VARCHAR(100) NOT NULL,
-  preferredLanguage VARCHAR(100) NOT NULL,
-  religion VARCHAR(100) NOT NULL,
-  phoneNo BIGINT(10) NOT NULL,
-  email VARCHAR(100) NOT NULL,
-  address VARCHAR(200) NOT NULL,
+  healthCardNumber VARCHAR(100) NOT NULL DEFAULT "NA",
+  firstName VARCHAR(100) NOT NULL DEFAULT "NA",
+  lastName VARCHAR(100) NOT NULL DEFAULT "NA",
+  dateOfBirth DATE NOT NULL DEFAULT "2000-01-01",
+  gender VARCHAR(100) NOT NULL DEFAULT "NA",
+  ethnicity VARCHAR(100) NOT NULL DEFAULT "NA",
+  preferredLanguage VARCHAR(100) NOT NULL DEFAULT "NA",
+  religion VARCHAR(100) NOT NULL DEFAULT "NA",
+  phoneNo BIGINT(10) NOT NULL DEFAULT "1111111111",
+  email VARCHAR(100) NOT NULL DEFAULT "NA",
+  address VARCHAR(200) NOT NULL DEFAULT "NA",
   PRIMARY KEY (healthCardNumber));
   
   
@@ -192,8 +192,7 @@ CREATE TABLE patient_information.familydoctorpatientassignment (
 
 CREATE TABLE patient_information.healthrisk (
   resultingHealthProblem VARCHAR(500) NOT NULL,
-  probability INT NOT NULL,
-  overThreshold INT NOT NULL,
+  `probability(%)` INT NOT NULL,
   patientHealthCardNumber VARCHAR(100) NOT NULL,
   PRIMARY KEY (resultingHealthProblem, patientHealthCardNumber),
   FOREIGN KEY (patientHealthCardNumber) REFERENCES patient(healthCardNumber)
