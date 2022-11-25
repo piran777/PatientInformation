@@ -25,7 +25,7 @@ let genTestResult = require(path+'testResult.js').generateTestResults;
 
 
 let con = mysql.createConnection({
-    host : "ec2-34-203-191-252.compute-1.amazonaws.com",
+    host : "ec2-54-172-199-80.compute-1.amazonaws.com",
     user : "akassara",
     password : "sdfaswqer@#A1",
     database : "patient_information"
@@ -167,7 +167,78 @@ function generateSQL(element, tableName) {
     }
 }
 
+function addSubstancesToPatients() {
+    con.connect(function(err) {
+    if(err) return console.log(err);
+        let patients = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/Patient.json')));
+        
+        let substances = [];
+        let obj = [];
+        for(let i = 0; i < patients.length; i++) {
+            let birthDate = patients[i]["dateOfBirth"].split('-');
+            let temp = genSubstance(new Date(birthDate[0], birthDate[1], birthDate[2]), patients[i]["healthCardNumber"]);
+            substances.push(Object.values(temp));
+            obj.push(temp);
+        }
 
+        con.query(generateSQL(obj[0], "substance"), [substances], function(err, result){if(err) throw err; console.log(result)});
+    });
+}
+function addFamily() {
+    con.connect(function(err) {
+    if(err) return console.log(err);
+    let patients = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/Patient.json')));
+
+    let family = [];
+    let obj = [];
+    for(let i = 0; i < patients.length-1; i++) {
+        let temp = genFamily(patients[i]["healthCardNumber"], patients[i+1]["healthCardNumber"]);
+        family.push(Object.values(temp));
+        obj.push(temp);
+    }
+
+    con.query(generateSQL(obj[0], "family"), [family], function(err, result){if(err) throw err; console.log(result)});
+    });
+}
+
+function addFamilyDoctorAssignment() {
+    con.connect(function(err) {
+    if(err) return console.log(err);
+    let patients = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/Patient.json')));
+    let FamilyDoctor = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/FamilyDoctor.json')));
+
+    
+    for(let i = 0; i < patients.length; i++) {
+        let assignment = [];
+        let obj = [];
+        let birthDate = patients[i]["dateOfBirth"].split('-');
+        let temp = genFamilyDoctorAssignment(new Date(birthDate[0], birthDate[1], birthDate[2]),patients[i]["healthCardNumber"],FamilyDoctor);
+
+        for(let d = 0; d < temp.length; d++) {
+            assignment.push(Object.values(temp[d]));
+            obj.push(temp[d]);
+        }
+
+        con.query(generateSQL(obj[0], "familydoctorpatientassignment"), [assignment], function(err, result){if(err) throw err; console.log(result)});
+
+    }
+
+    });
+}
+
+
+function getRandomInt(min, max) {
+    min = Math.floor(min);
+    max = Math.floor(max);
+
+    if(max < min) {
+        let temp = max;
+        max = min;
+        min = temp;
+    }
+    
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 // console.log(genPatient(1));
 // console.log(genHealthProblemStatus( "sadfasd", new Date(2002, 3, 3), ""));
 // console.log(genAppointment("He is hurt", "Broken leg", "CAMD12345679", "233422332as", new Date(2002, 3, 3)));
@@ -189,4 +260,6 @@ function generateSQL(element, tableName) {
 //import data to database
 // generateDataThatIsIndependent();//don't run this again it will cause issues as the data has already been added
 //  generateDataWithoutFK();
-
+// addSubstancesToPatients();
+//addFamily();
+// addFamilyDoctorAssignment();
