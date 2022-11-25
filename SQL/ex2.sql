@@ -181,7 +181,7 @@ CREATE TABLE patient_information.symptom (
 
 CREATE TABLE patient_information.familydoctorpatientassignment (
   startDate DATE NOT NULL,
-  endDate DATE NOT NULL,
+  endDate DATE,
   patientHealthCardNumber VARCHAR(100) NOT NULL,
   familyDoctorMINC VARCHAR(100) NOT NULL,
   PRIMARY KEY (familyDoctorMINC, patientHealthCardNumber, startDate),
