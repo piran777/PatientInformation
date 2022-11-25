@@ -71,7 +71,7 @@ CREATE TABLE patient_information.healthproblemmedicationusage (
   CREATE TABLE patient_information.test (
   type VARCHAR(100) NOT NULL,
   date DATE NOT NULL,
-  AppointmentID INT NOT NULL AUTO_INCREMENT,
+  AppointmentID INT NOT NULL,
   PRIMARY KEY (type, AppointmentID),
   FOREIGN KEY (AppointmentID) REFERENCES appointment(id)
   ON UPDATE CASCADE
