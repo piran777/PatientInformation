@@ -79,11 +79,11 @@ CREATE TABLE patient_information.healthproblemmedicationusage (
  
  CREATE TABLE patient_information.testresult (
   component VARCHAR(100) NOT NULL,
-  value INT NOT NULL,
+  value FLOAT NOT NULL,
   unit VARCHAR(100) NOT NULL,
   note VARCHAR(100) NOT NULL,
   TestType VARCHAR(100) NOT NULL,
-  AppointmentID INT NOT NULL AUTO_INCREMENT,
+  AppointmentID INT NOT NULL ,
   PRIMARY KEY (component, TestType, AppointmentID),
   FOREIGN KEY (TestType) REFERENCES test(type)
   ON UPDATE CASCADE,
