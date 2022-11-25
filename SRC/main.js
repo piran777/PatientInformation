@@ -25,12 +25,11 @@ let genTestResult = require(path+'testResult.js').generateTestResults;
 
 
 let con = mysql.createConnection({
-    host : "ec2-54-172-199-80.compute-1.amazonaws.com",
+    host : "ec2-3-82-125-52.compute-1.amazonaws.com",
     user : "akassara",
     password : "sdfaswqer@#A1",
     database : "patient_information"
 });
-
 
 function generateDataThatIsIndependent() {
     con.connect(function(err) {
@@ -226,6 +225,78 @@ function addFamilyDoctorAssignment() {
     });
 }
 
+function addSurgery() {
+    con.connect(function(err) {
+        if(err) return console.log(err);
+        let patients = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/Patient.json')));
+        let OtherDoctor = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/OtherDoctor.json')));
+
+        let surgery = [];
+        let obj = [];
+        for(let i = 0; i < patients.length; i++) {
+            for(let d = 0; d < getRandomInt(0,7); d++) {
+                let birthDate = patients[i]["dateOfBirth"].split('-');
+
+                let temp = genSurgery(patients[i]["healthCardNumber"], OtherDoctor, new Date(birthDate[0], birthDate[1], birthDate[2]));
+                surgery.push(Object.values(temp));
+                obj.push(temp);
+            }
+        }
+        con.query(generateSQL(obj[0], "surgery"), [surgery], function(err, result){if(err) throw err; console.log(result)});
+    });
+}
+
+function addAppointment() {
+    con.connect(function(err) {
+        if(err) return console.log(err);
+
+        let RawSymptoms = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'DataUsed/illnessSymptoms.json')));
+        let Assignments = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/test.json')));
+        
+        let Patients =  new Map();
+        JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/Patient.json'))).forEach((value) => {
+            Patients.set(value["healthCardNumber"], value);
+        });
+
+        let appointments = [];
+        let objAppointments = [];
+
+        for(let i = 0; i < Assignments.length; i++) {
+            for(let d = 0; d < getRandomInt(2, 10); d++) {
+                let birthDate = Patients.get(Assignments[i]["patientHealthCardNumber"])["dateOfBirth"].split('-');
+                let date = new Date(birthDate[0], birthDate[1], birthDate[2]);
+
+                let tempAppointment = genAppointment(RawSymptoms[0, getRandomInt(0, RawSymptoms.length-1)]["name"],Assignments[i]["familyDoctorMINC"] ,Assignments[i]["patientHealthCardNumber"], date);
+                objAppointments.push(tempAppointment);
+                appointments.push(Object.values(tempAppointment));
+            }
+        }
+        con.query(generateSQL(objAppointments[0], "appointment"), [appointments], function(err, result){if(err) throw err; console.log(result)});
+    });
+}
+
+function addSymptoms() {
+    con.connect(function(err) {
+        if(err) return console.log(err);
+
+        let appointments = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/Appointment.json')));
+
+        let symptoms = [];
+        let obj = [];
+        for(let i = 0; i < appointments.length; i++) {
+            let temp = genSymptoms(appointments[i]["id"], appointments[i]["reasonforAppointment"]);
+
+            temp.forEach((val) => {
+                obj.push(val);
+                symptoms.push(Object.values(val));
+            });
+        }
+        con.query(generateSQL(obj[0], "symptom"), [symptoms], function(err, result){if(err) throw err; console.log(result)});
+
+
+    });
+}
+
 
 function getRandomInt(min, max) {
     min = Math.floor(min);
@@ -257,9 +328,12 @@ function getRandomInt(min, max) {
 // console.log(genSymptomsTreatmentData());
 // console.log(genTestResult(12, "test1"));
 
-//import data to database
+//import data to database (don't run these a second time)
 // generateDataThatIsIndependent();//don't run this again it will cause issues as the data has already been added
 //  generateDataWithoutFK();
 // addSubstancesToPatients();
 //addFamily();
 // addFamilyDoctorAssignment();
+// addSurgery();
+// addAppointment();
+// addSymptoms();

@@ -3,13 +3,24 @@ const path = require('path');
 
 let symptom = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../DataUsed/illnessSymptoms.json')));
 
-function generateSymptoms(appointmentID) {
-    let out = [];
+function generateSymptoms(appointmentID, reasonForAppointment) {
+    let map = new Map();
+    let out = [{
+        appointmentID : appointmentID,
+        type : reasonForAppointment
+    }];
+    map.set(out[0]["type"], "");
 
     for(let i = 0; i < getRandomInt(0, 7); i++) {
+        let type = symptom[getRandomInt(0,symptom.length-1)]["name"];
+        while(map.has(type)) {
+            type = symptom[getRandomInt(0,symptom.length-1)]["name"];
+        }
+        map.set(type, "");
+        
         out.push({
             appointmentID: appointmentID,
-            type: symptom[getRandomInt(0,symptom.length-1)]["name"]
+            type: type
         });
     }
 

@@ -6,15 +6,15 @@ let streetNames = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../DataUse
 let cityNames = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../DataUsed/cities.json')));
 
 
-function generateSurgery(healthCardNumber, DoctorMINC, patientBirthDate) {
+function generateSurgery(healthCardNumber, setDoctorMINC, patientBirthDate) {
     let date = new Date(getRandomInt(patientBirthDate.getFullYear(), 2021), getRandomInt(patientBirthDate.getMonth(), 11), getRandomInt(patientBirthDate.getDate(), 31));//max day being set as 31 is fine as the constructor will just go to the next month and "add" the extra days
 
     return {
         date : date.toISOString().split('T')[0],
         type : surgeries[getRandomInt(0, surgeries.length-1)]["CPT Description"],
         location : generateAddress(),
-        doctorResponsibleMINC : DoctorMINC,
-        patientHealthCardNumber : healthCardNumber
+        DoctorResponsibleMINC : setDoctorMINC[getRandomInt(0, setDoctorMINC.length-1)]["MINC"],
+        PatientHealthCardNumber : healthCardNumber
     }
 }
 

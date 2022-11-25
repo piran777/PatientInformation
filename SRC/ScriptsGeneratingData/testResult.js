@@ -9,11 +9,11 @@ let notes = ["This could be better", "good", "Too high", "Too low", "We will nee
 function generateTestResults(appointmentID, testType) {
     let out = [];
     
-    for(let i = 0; i < getRandomInt(0, units.length-1); i++) {
+    for(let i = 0; i < getRandomInt(0, components.length-1); i++) {
         out.push({
-            component: components[getRandomInt(0, components.length-1)],
+            component: components[i],
             value: getRandomInt(0, 9999)/100,
-            unit: units[i],//this is to ensure that all values are unique but a very lazy way of doing it
+            unit: units[getRandomInt(0, units.length-1)],//this is to ensure that all values are unique but a very lazy way of doing it
             note: notes[getRandomInt(0, notes.length-1)],
             TestType: testType,
             AppointmentID: appointmentID
