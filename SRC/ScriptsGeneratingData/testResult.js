@@ -5,6 +5,7 @@ let type = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../DataUsed/test.
 let components = ["Systolic Average Blood Pressure", "Min Systolic Blood Pressure", "Max Diastolic Blood Pressure", "Diastolic Average Blood Pressure", "Min Diastolic Blood Pressure", "Max Systolic Blood Pressure", "Creatinine", "eGFR", "BICARBONATE SERUM", "ALBUMIN R U", "Albumin,R.Urine", "Microalb Creat Ratio", "Sodium", "POTASSIUM", "Chloride", "Hemoglobin A1C, POC"];
 let units = ["mmol/L", "%", "mg/L", "mg/mmol creat", "umol/L", "mL/min/1.73m*2", ""];
 let notes = ["This could be better", "good", "Too high", "Too low", "We will need to work on this", "bad", "within range"];
+
 function generateTestResults(appointmentID, testType) {
     let out = [];
     

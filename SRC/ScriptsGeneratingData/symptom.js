@@ -4,12 +4,16 @@ const path = require('path');
 let symptom = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../DataUsed/illnessSymptoms.json')));
 
 function generateSymptoms(appointmentID) {
+    let out = [];
 
-    return {
-        appointmentID: appointmentID,
-        type: symptom[getRandomInt(0,symptom.length-1)]["name"]
-       
+    for(let i = 0; i < getRandomInt(0, 7); i++) {
+        out.push({
+            appointmentID: appointmentID,
+            type: symptom[getRandomInt(0,symptom.length-1)]["name"]
+        });
     }
+
+    return out;
 }
 
 function getRandomInt(min, max) {
@@ -25,5 +29,5 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-exports.generateSurgery = generateSurgery;
-console.log(generateSymptoms(1));
+exports.generateSymptoms = generateSymptoms;
+// console.log(generateSymptoms(1));

@@ -32,4 +32,4 @@ function getRandomInt(min, max) {
 }
 exports.healthProblemSpecializationData = healthProblemSpecializationData;
 
-console.log(healthProblemSpecializationData());
+// console.log(healthProblemSpecializationData());
