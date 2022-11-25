@@ -213,7 +213,7 @@ CREATE TABLE patient_information.surgery (
   PatientHealthCardNumber VARCHAR(100) NOT NULL,
   id INT NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (id),
-  FOREIGN KEY(DoctorResponsibleMINC) REFERENCES doctor(MINC)
+  FOREIGN KEY(DoctorResponsibleMINC) REFERENCES otherdoctor(MINC)
   ON UPDATE CASCADE,
   FOREIGN KEY(PatientHealthCardNumber) REFERENCES patient(healthCardNumber)
   ON UPDATE CASCADE
