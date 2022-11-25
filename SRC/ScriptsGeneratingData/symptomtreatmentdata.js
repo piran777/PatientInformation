@@ -7,12 +7,16 @@ let illnessSymptoms = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../Dat
 //these symptoms don't match their actual treatment as we couldn't find any data that has this already matched, so they are randomized
 function generateSymptomTreatmentData() {
     let out = [];
+    let keys = new Map();
 
     for(let i = 0; i < illnessSymptoms.length; i++) {
-        out.push({
-            symptom: illnessSymptoms[i]["symptoms"],
-            treatment: treatments[getRandomInt(0,treatments.length-1)]["treatment"]
-        });
+        if(!keys.has(illnessSymptoms[i]["symptoms"])) {
+            keys.set(illnessSymptoms[i]["symptoms"], "");
+            out.push({
+                symptom: illnessSymptoms[i]["symptoms"],
+                treatment: treatments[getRandomInt(0,treatments.length-1)]["treatment"]
+            });
+        }
     }
     
     return out;

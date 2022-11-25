@@ -11,7 +11,7 @@ function healthProblemSpecializationData() {
     for(let i = 0; i < illnessSymptoms.length; i++) {
         out.push({
             healthProblem : illnessSymptoms[i]["name"],
-            specialization : doctorSpec[getRandomInt(0, doctorSpec.length-1)]
+            specilization : doctorSpec[getRandomInt(0, doctorSpec.length-1)]
         });
     }
 

@@ -10,12 +10,12 @@ let specialization = ['Addiction medicine', 'Allergy and clinical immunology', '
 'Nephrology', 'Neurology', 'Neuroradiology', 'Neurosurgery', 'Obstetrics and gynecology', 'Opthalmology', 'Orthopedic surgery', 'Otolaryngology/head and neck surgery', 'Palliative medicine', 'Pediatrics', 'Physical medicine and rehabilitation',
 'Plastic surgery', 'Primary care mental health', 'Psychiatry', 'Radiation oncology', 'Reproductive biology', 'Respiratory disease', 'Rheumatology', 'Sport and exercise medicine', 'Urology', 'Vascular surgery'];
 
-function generateOtherDoctor() {
+function generateOtherDoctor(index) {
     let fNameI = getRandomInt(0, names.length-1);
     let lNameI = getRandomInt(0, names.length-1);
 
     return {
-        MINC: generateMINC(),
+        MINC: generateMINC(index),
         firstName: names[fNameI]['Name'],
         lastName: names[lNameI]['Name'],
         phoneNo: getRandomInt(1000000000, 9999999999),
@@ -24,9 +24,19 @@ function generateOtherDoctor() {
     }
 }
 
-function generateMINC() {
-    let randomSevenDigit = getRandomInt(1000000, 9999999);
-    return("CAMD" + randomSevenDigit.toString() + "9");
+function generateMINC(index) {
+    return("CAMD" + padZeros(index, 7) + "9");
+}
+
+function padZeros(val, length) {
+    val = String(val);
+    let out = val;
+
+    for(let i = 0; i < (length - val.length); i++) {
+        out = "0" + out;
+    }
+    
+    return out;
 }
 
 function getRandomInt(min, max) {
