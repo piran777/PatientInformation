@@ -12,6 +12,8 @@ VALUES ("2233565322SC","Scott","Croykee",Date'2002-03-13','M',"Arabic","English"
 INSERT INTO familydoctor (MINC, firstName, lastName, email, phoneNo)
 VALUES('CAMD23333529', 'Merry', 'Tod', 'martod@gmail.com', '0987654321');
 
+INSERT INTO familydoctor
+VALUES('CAMD76735929', 'Martin', 'Todev', 'martintodev@gmail.com', 0226458915);
 
 INSERT INTO familydoctor
 VALUES('CAMD65483259', 'Bert', 'Lucious', 'Lucious@rogers.com', 3284605377);

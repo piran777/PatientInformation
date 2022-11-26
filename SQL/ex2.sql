@@ -24,17 +24,17 @@ CREATE TABLE patient_information.medication (
   type VARCHAR(100) NOT NULL,
   id INT NOT NULL AUTO_INCREMENT,
   startDate DATE NOT NULL,
-  endDate DATE NOT NULL,
+  endDate DATE,
   PatientHealthCardNumber VARCHAR(100) NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (PatientHealthCardNumber) REFERENCES patient (healthCardNumber)
   ON UPDATE CASCADE);
 
 CREATE TABLE patient_information.healthproblemmedicationusage (
-  startDate DATE NOT NULL,
-  dosage INT NOT NULL,
+  startDate DATETIME(2) NOT NULL,
+  dosage FLOAT NOT NULL,
   frequency INT NOT NULL,
-  endDate DATE NOT NULL,
+  endDate DATE,
   medicationID INT NOT NULL,
   healthProblemID INT NOT NULL,
   PRIMARY KEY (medicationID, startDate,healthProblemID),
@@ -115,9 +115,9 @@ CREATE TABLE patient_information.family (
   CREATE TABLE patient_information.immunization (
   type VARCHAR(100) NOT NULL,
   date DATE NOT NULL,
-  location VARCHAR(45) NOT NULL,
+  location VARCHAR(200) NOT NULL,
   lot VARCHAR(100) NOT NULL,
-  dosage INT NOT NULL,
+  dosage FLOAT NOT NULL,
   site VARCHAR(100) NOT NULL,
   PatientHealthCardNumber VARCHAR(100) NOT NULL,
   PRIMARY KEY (type, date, PatientHealthCardNumber),
@@ -199,7 +199,7 @@ CREATE TABLE patient_information.healthrisk (
   ON UPDATE CASCADE);
 
 
-CREATE TABLE patient_information.healthproblemspecilizationdata (
+CREATE TABLE patient_information.healthproblemspecializationdata (
   healthProblem VARCHAR(500) NOT NULL,
   specilization VARCHAR(500) NOT NULL,
   PRIMARY KEY (healthProblem));
