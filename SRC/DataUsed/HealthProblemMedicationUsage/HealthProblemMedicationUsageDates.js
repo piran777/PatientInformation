@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 
-function genMedicationDate(patientBirthDate) {
+function genHealthProblemMedicationUsage(patientBirthDate) {
     let output = new Array();
     
     let startDate = new Date(getRandomInt(patientBirthDate.getFullYear(), 2021), getRandomInt(patientBirthDate.getMonth(), 11), getRandomInt(patientBirthDate.getDate(), 31));//max day being set as 31 is fine as the constructor will just go to the next month and "add" the extra days
@@ -47,4 +47,4 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-exports.genMedicationDate = genMedicationDate;
+exports.genHealthProblemMedicationUsage = genHealthProblemMedicationUsage;

@@ -21,11 +21,11 @@ let genSymptoms = require(path+'symptom.js').generateSymptoms;
 let genSymptomsTreatmentData = require(path+'symptomtreatmentdata.js').generateSymptomTreatmentData;
 let genTestResult = require(path+'testResult.js').generateTestResults;
 let genTest = require(path+'test.js').generateTests;
-
-
+let genImmunization = require('./DataUsed/Imunization/ImmunizationAddressDate.js').generateImmunization;
+let genHealthProblemMedicationUsage = require('./DataUsed/HealthProblemMedicationUsage/HealthProblemMedicationUsageDates.js').genHealthProblemMedicationUsage;
 
 let con = mysql.createConnection({
-    host : "ec2-3-82-125-52.compute-1.amazonaws.com",
+    host : "ec2-3-82-249-82.compute-1.amazonaws.com",
     user : "akassara",
     password : "sdfaswqer@#A1",
     database : "patient_information"
@@ -358,6 +358,90 @@ function addTestResults() {
     con.query(generateSQL(obj[0], "testresult"), [testResults], function(err, result){if(err) throw err; console.log(result)});
 }
 
+function addImmunization() {
+    con.connect(function(err) {
+        if(err) return console.log(err);
+        let patients = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/Patient.json')));
+
+        let immunizations = [];
+        let obj = [];
+
+        for(let i = 0; i < patients.length; i++) {
+            let birthDate = patients[i]["dateOfBirth"].split('-');
+            let temp = genImmunization(new Date(birthDate[0], birthDate[1], birthDate[2]), patients[i]["healthCardNumber"]);
+            temp.forEach((val) => {
+                immunizations.push(Object.values(val));
+                obj.push(val);
+            })
+        }
+
+        con.query(generateSQL(obj[0], "immunization"), [immunizations], function(err, result){if(err) throw err; console.log(result)});
+
+    });
+    
+}
+
+function addHealthProblem() {
+    con.connect(function(err) {
+        if(err) return console.log(err);
+        let patients = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/Patient.json')));
+
+        let healthProblems = [];
+        let obj = [];
+        for(let i = 0; i < patients.length; i++) {
+            let birthDate = patients[i]["dateOfBirth"].split('-');
+            let temp = genHealthProblem(new Date(birthDate[0], birthDate[1], birthDate[2]), patients[i]["healthCardNumber"]);
+
+            temp.forEach((val) => {
+                healthProblems.push(Object.values(val));
+                obj.push(val);
+            })
+        }
+
+        con.query(generateSQL(obj[0], "healthproblem"), [healthProblems], function(err, result){if(err) throw err; console.log(result)});
+
+    });
+}
+
+function addHealthProblemStatus() {
+    con.connect(function(err) {
+        if(err) return console.log(err);
+        let healthProblems = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/HealthProblems.json')));
+
+        let healthProblemStatus = [];
+        let obj = [];
+
+        for(let i = 0; i < healthProblems.length; i++) {
+            let stDate = healthProblems[i]["startDate"].split('-');
+            
+            let endDate = healthProblems[i]["endDate"];
+            endDate = endDate === null ? null : endDate.split('-');
+
+            let temp = genHealthProblemStatus(healthProblems[i]["id"], new Date(stDate[0], stDate[1], stDate[2].split('T')[0]),
+             endDate === null ? null : new Date(endDate[0], endDate[1], endDate[2].split('T')[0]));
+
+             temp.forEach((val) => {
+                healthProblemStatus.push(Object.values(val));
+                obj.push(val);
+            });
+        }
+        con.query(generateSQL(obj[0], "healthproblemstatus"), [healthProblemStatus], function(err, result){if(err) throw err; console.log(result)});
+
+        
+    });
+}
+
+function addHealthProblemMedicationUsage() {
+    con.connect(function(err) {
+        if(err) return console.log(err);
+        let healthProblems = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/HealthProblems.json')));
+        let medications = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/Medication.json')));
+
+        for(let i = 0; i < healthProblems.length; i++) {
+            genHealthProblemMedicationUsage();
+        }
+    });
+}
 function getRandomInt(min, max) {
     min = Math.floor(min);
     max = Math.floor(max);
@@ -400,3 +484,6 @@ function getRandomInt(min, max) {
 // addReferral();
 // addTest();
 // addTestResults();
+// addImmunization();
+// addHealthProblem();
+// addHealthProblemStatus();
