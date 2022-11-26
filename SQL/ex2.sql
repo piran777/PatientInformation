@@ -32,7 +32,7 @@ CREATE TABLE patient_information.medication (
 
 CREATE TABLE patient_information.healthproblemmedicationusage (
   startDate DATE NOT NULL,
-  dosage INT NOT NULL,
+  dosage FLOAT NOT NULL,
   frequency INT NOT NULL,
   endDate DATE NOT NULL,
   medicationID INT NOT NULL,
