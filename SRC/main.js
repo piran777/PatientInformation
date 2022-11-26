@@ -20,8 +20,8 @@ let genSurgery = require(path+'surgery.js').generateSurgery;
 let genSymptoms = require(path+'symptom.js').generateSymptoms;
 let genSymptomsTreatmentData = require(path+'symptomtreatmentdata.js').generateSymptomTreatmentData;
 let genTestResult = require(path+'testResult.js').generateTestResults;
+let genTest = require(path+'test.js').generateTests;
 
-//tables represended as an array
 
 
 let con = mysql.createConnection({
@@ -30,6 +30,7 @@ let con = mysql.createConnection({
     password : "sdfaswqer@#A1",
     database : "patient_information"
 });
+
 
 function generateDataThatIsIndependent() {
     con.connect(function(err) {
@@ -251,7 +252,7 @@ function addAppointment() {
         if(err) return console.log(err);
 
         let RawSymptoms = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'DataUsed/illnessSymptoms.json')));
-        let Assignments = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/test.json')));
+        let Assignments = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/assignments.json')));
         
         let Patients =  new Map();
         JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/Patient.json'))).forEach((value) => {
@@ -297,6 +298,65 @@ function addSymptoms() {
     });
 }
 
+function addReferral() {
+    con.connect(function(err) {
+        if(err) return console.log(err);
+        let appointments = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/Appointment.json')));
+        let otherDoctors = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/OtherDoctor.json')));
+        
+        let referrals = [];
+        let obj = [];
+
+        for(let i = 0; i < appointments.length; i++) {
+            let temp = genReferral(appointments[i]["reasonforAppointment"], otherDoctors, appointments[i]["id"]);
+            
+            temp.forEach((val) => {
+                referrals.push(Object.values(val));
+                obj.push(val);
+            });
+            
+        }
+
+        con.query(generateSQL(obj[0], "referral"), [referrals], function(err, result){if(err) throw err; console.log(result)});
+    });
+}
+
+function addTest() {
+    con.connect(function(err) {
+        if(err) return console.log(err);
+        let appointments = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/Appointment.json')));
+
+        let tests = [];
+        let obj = [];
+        for(let i = 0; i < appointments.length; i++) {
+            let stAppDate = appointments[i]["startDateTime"].split('-');
+            let date = new Date(stAppDate[0], stAppDate[1], stAppDate[2].split('T')[0]);
+
+            let temp = genTest(appointments[i]["id"], date);
+            temp.forEach((val) => {
+                tests.push(Object.values(val));
+                obj.push(val);
+            });
+        }
+        
+        con.query(generateSQL(obj[0], "test"), [tests], function(err, result){if(err) throw err; console.log(result)});
+    });
+}
+
+function addTestResults() {
+    let tests = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/tests.json')));
+
+    let testResults = [];
+    let obj = [];
+    for(let i = 0; i < tests.length; i++) {
+        let temp = genTestResult(tests[i]["AppointmentID"], tests[i]["type"]);
+        temp.forEach((val) => {
+            testResults.push(Object.values(val));
+            obj.push(val);
+        });
+    }
+    con.query(generateSQL(obj[0], "testresult"), [testResults], function(err, result){if(err) throw err; console.log(result)});
+}
 
 function getRandomInt(min, max) {
     min = Math.floor(min);
@@ -337,3 +397,6 @@ function getRandomInt(min, max) {
 // addSurgery();
 // addAppointment();
 // addSymptoms();
+// addReferral();
+// addTest();
+// addTestResults();

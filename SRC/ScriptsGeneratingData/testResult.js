@@ -8,10 +8,16 @@ let notes = ["This could be better", "good", "Too high", "Too low", "We will nee
 
 function generateTestResults(appointmentID, testType) {
     let out = [];
-    
-    for(let i = 0; i < getRandomInt(0, components.length-1); i++) {
+    let map = new Map();
+    for(let i = 0; i < getRandomInt(1, Math.floor((components.length-1)/2)); i++) {
+        let component = components[getRandomInt(0, components.length-1)];
+        while(map.has(component)) {
+            component = components[getRandomInt(0, components.length-1)];
+        }
+        map.set(component, "");
+
         out.push({
-            component: components[i],
+            component: component,
             value: getRandomInt(0, 9999)/100,
             unit: units[getRandomInt(0, units.length-1)],//this is to ensure that all values are unique but a very lazy way of doing it
             note: notes[getRandomInt(0, notes.length-1)],
