@@ -34,7 +34,7 @@ CREATE TABLE patient_information.healthproblemmedicationusage (
   startDate DATE NOT NULL,
   dosage FLOAT NOT NULL,
   frequency INT NOT NULL,
-  endDate DATE NOT NULL,
+  endDate DATE,
   medicationID INT NOT NULL,
   healthProblemID INT NOT NULL,
   PRIMARY KEY (medicationID, startDate,healthProblemID),
