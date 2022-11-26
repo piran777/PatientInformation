@@ -31,7 +31,7 @@ CREATE TABLE patient_information.medication (
   ON UPDATE CASCADE);
 
 CREATE TABLE patient_information.healthproblemmedicationusage (
-  startDate DATE NOT NULL,
+  startDate DATETIME(2) NOT NULL,
   dosage FLOAT NOT NULL,
   frequency INT NOT NULL,
   endDate DATE,
