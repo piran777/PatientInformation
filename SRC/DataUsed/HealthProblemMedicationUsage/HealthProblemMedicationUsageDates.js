@@ -2,37 +2,65 @@ const fs = require('fs');
 const path = require('path');
 
 
-function genHealthProblemMedicationUsage(patientBirthDate) {
-    let output = new Array();
-    
-    let startDate = new Date(getRandomInt(patientBirthDate.getFullYear(), 2021), getRandomInt(patientBirthDate.getMonth(), 11), getRandomInt(patientBirthDate.getDate(), 31));//max day being set as 31 is fine as the constructor will just go to the next month and "add" the extra days
-    let endDate = new Date(getRandomInt(startDate.getFullYear(), 2021), getRandomInt(startDate.getMonth(), 11), getRandomInt(startDate.getDate(), 31));
+function genHealthProblemMedicationUsage(healthProblemID, medicationID, healthProblemStartDate, healthProblemEndDate) {
+    let out = new Array();
+    let maxDate = healthProblemEndDate instanceof  Date? healthProblemEndDate : new Date(2021, 11, 31);
+
+    let startDate = new Date(getRandomInt(healthProblemStartDate.getFullYear(), maxDate.getFullYear()), getRandomInt(healthProblemStartDate.getMonth(), maxDate.getMonth()), getRandomInt(healthProblemStartDate.getDate(), maxDate.getDate()-5));//max day being set as 31 is fine as the constructor will just go to the next month and "add" the extra days
+    let endDate = new Date(getRandomInt(startDate.getFullYear(), maxDate.getFullYear()), getRandomInt(startDate.getMonth(), maxDate.getMonth()), getRandomInt(startDate.getDate(), maxDate.getDate()-5));
     
 
-    output.push({
-        startDate : startDate.toISOString().split('T')[0],
-        endDate : endDate.toISOString().split('T')[0]
+    out.push({
+        startDate : startDate.toISOString().replace('T', ' ').replace('Z', '').replace(':00.000', ''),
+        dosage : getRandomInt(0, 9999)/1000,
+        frequency : getRandomInt(0, 3),
+        endDate : endDate.toISOString().replace('T', ' ').replace('Z', '').replace(':00.000', ''),
+        medicationID : medicationID,
+        healthProblemID : healthProblemID
+
     });
 
-    for(let i = 0; i < getRandomInt(0, 2); i++) {
-        startDate = new Date(getRandomInt(endDate.getFullYear(), 2021), getRandomInt(endDate.getMonth(), 11), getRandomInt(endDate.getDate(), 31));//max day being set as 31 is fine as the constructor will just go to the next month and "add" the extra days
-        endDate = new Date(getRandomInt(startDate.getFullYear(), 2021), getRandomInt(startDate.getMonth(), 11), getRandomInt(startDate.getDate(), 31+i));
-
-        output.push({
-            startDate : startDate.toISOString().split('T')[0],
-            endDate : endDate.toISOString().split('T')[0]
+    for(let i = 0; i < getRandomInt(0,1); i++) {
+        startDate = new Date(getRandomInt(endDate.getFullYear(), maxDate.getFullYear()), getRandomInt(endDate.getMonth(), maxDate.getMonth()), getRandomInt(endDate.getDate(), maxDate.getDate()-4+i));//max day being set as 31 is fine as the constructor will just go to the next month and "add" the extra days
+        endDate = new Date(getRandomInt(startDate.getFullYear(), maxDate.getFullYear()), getRandomInt(startDate.getMonth(), maxDate.getMonth()), getRandomInt(startDate.getDate(), maxDate.getDate()-4+i));
+        startDate.setMinutes(i+1);
+        out.push({
+            startDate : startDate.toISOString().replace('T', ' ').replace('Z', '').replace(':00.000', ''),
+            dosage : getRandomInt(0, 9999)/1000,
+            frequency : getRandomInt(0, 3),
+            endDate : endDate.toISOString().replace('T', ' ').replace('Z', '').replace(':00.000', ''),
+            medicationID : medicationID,
+            healthProblemID : healthProblemID
         });
     }
 
-
-     startDate = new Date(getRandomInt(endDate.getFullYear(), 2021), getRandomInt(endDate.getMonth(), 11), getRandomInt(endDate.getDate(), 31+3));//max day being set as 31 is fine as the constructor will just go to the next month and "add" the extra days
-    out.push({
-        startDate : startDate.toISOString().split('T')[0],
-        endDate : null
-    })
+    if(healthProblemEndDate instanceof Date) {
+        startDate = new Date(getRandomInt(endDate.getFullYear(), maxDate.getFullYear()), getRandomInt(endDate.getMonth(), maxDate.getMonth()), getRandomInt(endDate.getDate(), maxDate.getDate()));//max day being set as 31 is fine as the constructor will just go to the next month and "add" the extra days
+        startDate.setMinutes(10);
+        out.push({
+            startDate : startDate.toISOString().replace('T', ' ').replace('Z', '').replace(':00.000', ''),
+            dosage : getRandomInt(0, 9999)/1000,
+            frequency : getRandomInt(0, 3),
+            endDate : healthProblemEndDate.toISOString().replace('T', ' ').replace('Z', '').replace(':00.000', ''),
+            medicationID : medicationID,
+            healthProblemID : healthProblemID
+        });
+    } else {
+        startDate = new Date(getRandomInt(endDate.getFullYear(), maxDate.getFullYear()), getRandomInt(endDate.getMonth(), maxDate.getMonth()), getRandomInt(endDate.getDate(), maxDate.getDate()));//max day being set as 31 is fine as the constructor will just go to the next month and "add" the extra days
+        startDate.setMinutes(10);
+        out.push({
+            startDate : startDate.toISOString().replace('T', ' ').replace('Z', '').replace(':00.000', ''),
+            dosage : getRandomInt(0, 9999)/1000,
+            frequency : getRandomInt(0, 3),
+            endDate : null,
+            medicationID : medicationID,
+            healthProblemID : healthProblemID
+        });
+    }
 
    return out;
 }
+
 
 function getRandomInt(min, max) {
     min = Math.floor(min);
@@ -48,3 +76,4 @@ function getRandomInt(min, max) {
 }
 
 exports.genHealthProblemMedicationUsage = genHealthProblemMedicationUsage;
+// console.log(genHealthProblemMedicationUsage("a", "asdf", new Date(2002, 3, 3), null));

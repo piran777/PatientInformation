@@ -437,9 +437,27 @@ function addHealthProblemMedicationUsage() {
         let healthProblems = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/HealthProblems.json')));
         let medications = JSON.parse(fs.readFileSync(pathA.resolve(__dirname, 'TablesAsJSON/Medication.json')));
 
+        let healthProblemMedicationUsage = [];
+        let obj = [];
+
         for(let i = 0; i < healthProblems.length; i++) {
-            genHealthProblemMedicationUsage();
+            let stDate = healthProblems[i]["startDate"].split('-');
+            
+            let endDate = healthProblems[i]["endDate"];
+            endDate = endDate === null ? null : endDate.split('-');
+
+
+            let temp = genHealthProblemMedicationUsage(healthProblems[i]["id"], medications[getRandomInt(0, medications.length-1)]["id"],
+            new Date(stDate[0], stDate[1], stDate[2].split('T')[0]),
+             endDate === null ? null : new Date(endDate[0], endDate[1], endDate[2].split('T')[0]));
+
+             temp.forEach((val) => {
+                healthProblemMedicationUsage.push(Object.values(val));
+                obj.push(val);
+            });
         }
+
+        con.query(generateSQL(obj[0], "healthproblemmedicationusage"), [healthProblemMedicationUsage], function(err, result){if(err) throw err; console.log(result)});
     });
 }
 function getRandomInt(min, max) {
@@ -487,3 +505,5 @@ function getRandomInt(min, max) {
 // addImmunization();
 // addHealthProblem();
 // addHealthProblemStatus();
+
+addHealthProblemMedicationUsage();
