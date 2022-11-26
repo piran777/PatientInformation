@@ -28,8 +28,9 @@ FROM otherdoctor o
 WHERE (specialization = 'CARDIOLOGY' OR specialization = 'Cardiac Surgery') AND r.otherDoctorMINC = o.MINC)
 ORDER BY r.appointmentID;
 
-SELECT healthCardNumber, firstName, LastName
+SELECT healthCardNumber, firstName, lastName
 FROM patient p
 WHERE NOT EXISTS(SELECT *
 FROM immunization i
-WHERE p.healthCardNumber = i.PatientHealthCardNumber);
+WHERE p.healthCardNumber = i.PatientHealthCardNumber)
+ORDER BY lastName;
