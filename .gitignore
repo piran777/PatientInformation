@@ -1,4 +1,9 @@
+#ignore mac os generated files
 .DS_Store
+
+#ignore credentials
+serverCredentials.json
+
 
 ## node ignore files
 # Logs
