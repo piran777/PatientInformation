@@ -9,9 +9,7 @@ const router = express.Router();
 app.use('/', express.static('../frontend/build'));
 router.use(express.json());
 
-router.post('/appointment', async (req,res)=>{
-  let identical = false;
-  
+router.post('/appointment', async (req,res)=>{ //insert an appointment
   let sqlAppointment = await query(` INSERT INTO appointment(
     startDateTime,
     endDateTime,
@@ -33,11 +31,24 @@ router.post('/appointment', async (req,res)=>{
     notes,
     reasonforAppointment,
     FamilyDoctorMINC,patientHealthCardNumber FROM appointment WHERE startDateTime = '${req.body.startDateTime}' AND  endDateTime ='${req.body.endDateTime}' AND NOTES =  '${req.body.notes}'
-    AND reasonforAppointment = '${req.body.reasonforAppointment}' AND familyDoctorMINC = '${req.body.familyDoctorMINC}' AND patientHealthCardNumber = '${req.body.patientHealthCardNumber}'` );
+    AND reasonforAppointment = '${req.body.reasonforAppointment}' AND familyDoctorMINC = '${req.body.familyDoctorMINC}' AND patientHealthCardNumber = '${req.body.patientHealthCardNumber}'`);
      
   console.log(sqlAppointment)
-  res.send(sqlViewAppointment);} //returns the new inserted appointments
+  res.send(sqlViewAppointment);
+} //returns the new inserted appointments
 )
+
+router.get('/appointment', async (req,res)=>{ //view all appointment to be used for calender
+  
+  let sqlViewAppointment = await query ( `SELECT  startDateTime,
+  endDateTime,
+  notes,
+  reasonforAppointment,
+  FamilyDoctorMINC,patientHealthCardNumber FROM appointment`);
+  
+  res.send(sqlViewAppointment);
+
+})
 
 
 
