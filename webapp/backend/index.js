@@ -19,15 +19,14 @@ router.post('/appointment', async (req,res)=>{ //insert an appointment
     FamilyDoctorMINC,patientHealthCardNumber
     )
     VALUES(
-    '${req.body.startDateTime}', 
+    '${req.body.startDateTime}',
     '${req.body.endDateTime}',
     '${req.body.notes}',
     '${req.body.reasonforAppointment}',
     '${req.body.familyDoctorMINC}',
     '${req.body.patientHealthCardNumber}'
     )`);
- //2022-01-01 00:00:00.00
- //for start and end date time format
+
     let sqlViewAppointment = await query ( `SELECT  startDateTime,
     endDateTime,
     notes,
@@ -254,7 +253,19 @@ router.get('/patient/riskfactors/:id', validateHealthCard, async (req, res) => {
     value.probability = 1- value.probability;
   });
 
-  return res.json(aggregatedHealthRisks);
+  //sort and the ones over
+  aggregatedHealthRisks.sort(compareProb);
+
+  return res.json(aggregatedHealthRisks.slice(0, 10));
+
+  function compareProb(a, b) {
+    if(a.probability < b.probability) {
+      return 1;
+    } else if(a.probability > b.probability) {
+      return -1;
+    }
+    return 0;
+  }
 });
 
 router.get('/patient/suggestedtreatments/:appointmentID', async (req, res) => {
@@ -304,6 +315,8 @@ router.get('/familydoctor/:MINC', async (req, res) => {
   
   let result = await query(`SELECT * FROM familydoctor WHERE MINC='${req.params.MINC}';`);
   if(result.error !== undefined) return res.sendStatus(500);
+  console.log(result.result.length);
+  if(result.result === undefined || result.result[0] === undefined || result.result.length === 0) return res.status(400).json({error : "There isn't a family doctor associated with this minc"});
 
   return res.json(result.result);
 });
