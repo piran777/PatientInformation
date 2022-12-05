@@ -27,7 +27,7 @@ let genHealthProblemMedicationUsage = require('./DataUsed/HealthProblemMedicatio
 let con = mysql.createConnection({
     host : "localhost",
     user : "root",
-    password : "",
+    password : "Kassara7",
     database : "patient_information"
 });
 
@@ -491,7 +491,7 @@ function getRandomInt(min, max) {
 // console.log(genTestResult(12, "test1"));
 
 //import data to database (don't run these a second time)
-generateDataThatIsIndependent();//don't run this again it will cause issues as the data has already been added
+// generateDataThatIsIndependent();//don't run this again it will cause issues as the data has already been added
 //  generateDataWithoutFK();
 // addSubstancesToPatients();
 //addFamily();

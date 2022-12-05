@@ -243,12 +243,26 @@ router.get('/patient/riskfactors/:id', validateHealthCard, async (req, res) => {
 
     prevVal = value.resultingIllness;
   });
-  
+
   aggregatedHealthRisks.forEach((value) => {
     value.probability = 1- value.probability;
   });
 
   return res.json(aggregatedHealthRisks);
+});
+
+router.get('/patient/suggestedtreatments/:appointmentID', async (req, res) => {
+  let id = req.params.appointmentID;
+  if(isNaN(id)) return res.status(400).json({error : "Please enter a number for the appointment id."});
+
+  let valid = await query(`SELECT EXISTS (SELECT * FROM appointment WHERE id=${id}) AS 'exists';`);
+  if(valid.error !== undefined) return res.sendStatus(500);
+  if(!valid.result || !valid.result[0] || valid.result[0].exists === 0) return res.status(400).json({error : "This appointment id doesn't exist."});
+
+  let symptoms = await query(`SELECT type,treatment FROM symptom JOIN symptomtreatmentdata AS td ON td.symptom=symptom.type WHERE appointmentID=${id};`);
+  if(symptoms.error !== undefined) return res.sendStatus(500);
+  
+  return res.json(symptoms.result);
 })
 
 async function validateHealthCard(req, res, next) {

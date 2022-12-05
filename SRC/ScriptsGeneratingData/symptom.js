@@ -12,9 +12,9 @@ function generateSymptoms(appointmentID, reasonForAppointment) {
     map.set(out[0]["type"], "");
 
     for(let i = 0; i < getRandomInt(0, 7); i++) {
-        let type = symptom[getRandomInt(0,symptom.length-1)]["name"];
+        let type = symptom[getRandomInt(0,symptom.length-1)]["symptoms"];
         while(map.has(type)) {
-            type = symptom[getRandomInt(0,symptom.length-1)]["name"];
+            type = symptom[getRandomInt(0,symptom.length-1)]["symptoms"];
         }
         map.set(type, "");
         
