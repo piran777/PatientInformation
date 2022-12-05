@@ -1,4 +1,5 @@
 const express = require('express');
+const { rmSync } = require('fs');
 const {startDatabaseConnection, query} = require('./databaseConnection');
 
 
@@ -61,13 +62,15 @@ router.get('/appointment/forDoctor', async (req,res)=>{ //view all appointments 
 router.get('/patient/healthcard/:number', async (req, res) => {
     const patientHealthCard = req.params.number
     
-    const patient = await query(`SELECT c.* FROM patientcontactview c LEFT JOIN patient p ON p.firstName = c.firstName WHERE p.healthCardNumber = "${patientHealthCard}"`);
-    if(patient.error !== undefined) {console.log(patient.error); return res.sendStatus(500);}
+    const patient = await query(`SELECT * FROM patient WHERE healthCardNumber = '${patientHealthCard}';`);
+    if(patient.error !== undefined) return res.sendStatus(500);
 
     if(patient.result.length === 0) {
       res.status(404).send("Patient with Health Card Number: " + patientHealthCard + " not found");
+    } else if(patient.result.length === 1) {
+      res.send(patient.result[0]);
     } else {
-      res.send(patient.result);
+      res.sendStatus(500);
     }
 })
 
