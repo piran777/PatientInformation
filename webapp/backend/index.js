@@ -1,12 +1,64 @@
 const express = require('express');
 const {startDatabaseConnection, query} = require('./databaseConnection');
 
+
 const app = express();
 const port = 3000;
 
 const router = express.Router();
 app.use('/', express.static('../frontend/build'));
 router.use(express.json());
+
+router.post('/appointment', async (req,res)=>{ //insert an appointment
+  let sqlAppointment = await query(` INSERT INTO appointment(
+    startDateTime,
+    endDateTime,
+    notes,
+    reasonforAppointment,
+    FamilyDoctorMINC,patientHealthCardNumber
+    )
+    VALUES(
+    '${req.body.startDateTime}',
+    '${req.body.endDateTime}',
+    '${req.body.notes}',
+    '${req.body.reasonforAppointment}',
+    '${req.body.familyDoctorMINC}',
+    '${req.body.patientHealthCardNumber}'
+    )`);
+
+    let sqlViewAppointment = await query ( `SELECT  startDateTime,
+    endDateTime,
+    notes,
+    reasonforAppointment,
+    FamilyDoctorMINC,patientHealthCardNumber FROM appointment WHERE startDateTime = '${req.body.startDateTime}' AND  endDateTime ='${req.body.endDateTime}' AND NOTES =  '${req.body.notes}'
+    AND reasonforAppointment = '${req.body.reasonforAppointment}' AND familyDoctorMINC = '${req.body.familyDoctorMINC}' AND patientHealthCardNumber = '${req.body.patientHealthCardNumber}'`);
+     
+  console.log(sqlAppointment)
+  res.send(sqlViewAppointment);
+} //returns the new inserted appointments
+)
+
+router.get('/appointment', async (req,res)=>{ //view all appointment to be used for calender
+  
+  let sqlViewAppointment = await query ( `SELECT  startDateTime,
+  endDateTime,
+  notes,
+  reasonforAppointment,
+  FamilyDoctorMINC,patientHealthCardNumber FROM appointment`);
+  res.send(sqlViewAppointment);
+
+})
+router.get('/appointment/forDoctor', async (req,res)=>{ //view all appointments for a specific doctor //mayb for calender
+
+  let sqlViewAppointment = await query ( `SELECT familyDoctorMINC, patientHealthCardNumber, startDateTime, endDateTime, notes, reasonforAppointment
+  FROM  appointment
+  WHERE familyDoctorMINC = "${req.body.familyDoctorMINC}"`);
+  res.send(sqlViewAppointment);
+
+})
+
+
+
 
 app.use('/api', router);
 
