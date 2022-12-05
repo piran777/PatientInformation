@@ -18,14 +18,15 @@ router.post('/appointment', async (req,res)=>{ //insert an appointment
     FamilyDoctorMINC,patientHealthCardNumber
     )
     VALUES(
-    '${req.body.startDateTime}',
+    '${req.body.startDateTime}', 
     '${req.body.endDateTime}',
     '${req.body.notes}',
     '${req.body.reasonforAppointment}',
     '${req.body.familyDoctorMINC}',
     '${req.body.patientHealthCardNumber}'
     )`);
-
+ //2022-01-01 00:00:00.00
+ //for start and end date time format
     let sqlViewAppointment = await query ( `SELECT  startDateTime,
     endDateTime,
     notes,
