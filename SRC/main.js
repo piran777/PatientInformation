@@ -27,7 +27,7 @@ let genHealthProblemMedicationUsage = require('./DataUsed/HealthProblemMedicatio
 let con = mysql.createConnection({
     host : "localhost",
     user : "root",
-    password : "Kassara7",
+    password : "",
     database : "patient_information"
 });
 
@@ -43,16 +43,16 @@ function generateDataThatIsIndependent() {
         // OtherDoctor, FamilyDoctor, Patient, Medication, 
 
         //add SymptomTreatmentData
-        let symptomTreatmentData = genSymptomsTreatmentData();
+        // let symptomTreatmentData = genSymptomsTreatmentData();
      
-        if(symptomTreatmentData.length > 0) {
-            let output = [];
-            for(let i = 0; i < symptomTreatmentData.length; i++) {
-                output.push(Object.values(symptomTreatmentData[i]));
-            }
+        // if(symptomTreatmentData.length > 0) {
+        //     let output = [];
+        //     for(let i = 0; i < symptomTreatmentData.length; i++) {
+        //         output.push(Object.values(symptomTreatmentData[i]));
+        //     }
 
-            //con.query(generateSQL(symptomTreatmentData[0], "symptomtreatmentdata"), [output], function(err, result) {if(err) throw err;});
-        }
+        //     //con.query(generateSQL(symptomTreatmentData[0], "symptomtreatmentdata"), [output], function(err, result) {if(err) throw err;});
+        // }
    
     
 
@@ -491,7 +491,7 @@ function getRandomInt(min, max) {
 // console.log(genTestResult(12, "test1"));
 
 //import data to database (don't run these a second time)
-// generateDataThatIsIndependent();//don't run this again it will cause issues as the data has already been added
+generateDataThatIsIndependent();//don't run this again it will cause issues as the data has already been added
 //  generateDataWithoutFK();
 // addSubstancesToPatients();
 //addFamily();
