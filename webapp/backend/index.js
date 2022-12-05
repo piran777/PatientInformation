@@ -318,7 +318,7 @@ router.get('/familydoctor/:MINC', async (req, res) => {
   let result = await query(`SELECT * FROM familydoctor WHERE MINC='${req.params.MINC}';`);
   if(result.error !== undefined) return res.sendStatus(500);
   console.log(result.result.length);
-  if(result.result === undefined || result.result[0] === undefined || result.result.length === 0) return res.status(400).json({error : "There isn't a family doctor associated with this MINC"});
+  if(result.result === undefined || result.result[0] === undefined || result.result.length === 0) return res.status(400).json({error : "There isn't a family doctor associated with this minc"});
 
   return res.json(result.result);
 });
@@ -330,7 +330,7 @@ async function validateHealthCard(req, res, next) {
   }
 
   let {result, error} = await query(`SELECT EXISTS (SELECT * FROM patient WHERE HealthCardNumber='${healthCard}') AS 'exists'`);
-  if(error !== undefined) {console.log(error); return res.sendStatus(500);}
+  if(error !== undefined) return res.sendStatus(500);
 
   if(!result || !result[0] || result[0].exists === 0) return res.status(400).json({error : "This healthcard doesn't exist in our database."});
   
