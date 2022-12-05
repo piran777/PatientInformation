@@ -151,14 +151,84 @@ router.post('/patient', async (req, res) => {
 
   let doctorView = (await query(`SELECT * FROM patientContactView WHERE firstName = '${req.body.firstName}'AND lastName = '${req.body.lastName}'`)).result;
 
-  console.log(newPatientSql);
   res.send(doctorView);
 })
 
+//Inserts new medication for patient
+router.post('/medication', async (req, res) => {
+  let medicationSql = (await query(`INSERT INTO substance VALUES('${req.body.type}', '${req.body.startDate}', '${req.body.PatientHealthCardNumber}', '${req.body.endDate}')`)).result;
+
+  let seeMedsSql = (await query(`SELECT * FROM substance WHERE PatientHealthCardNumber = '${req.body.PatientHealthCardNumber}'`)).result;
+
+  seeMedsSql.forEach(element => {
+    element.startDate = convertDate(element.startDate);
+    element.endDate = convertDate(element.endDate);
+  });
+
+  res.send(seeMedsSql);
+})
+
+//Inserts new health problem for patient
+router.post('/healthproblem', async (req, res) => {
+  let healthproblemSql = (await query(`INSERT INTO healthproblem(type, startDate, PatientHealthCardNumber)
+  VALUES('${req.body.type}', '${req.body.startDate}', '${req.body.PatientHealthCardNumber}')`))
+
+  let newHealthProblemSql = (await query(`SELECT * FROM healthproblem WHERE PatientHealthCardNumber = '${req.body.PatientHealthCardNumber}'`)).result
+
+  newHealthProblemSql.forEach(element => {
+    element.startDate = convertDate(element.startDate);
+    if(element.endDate != null) {
+      element.endDate = convertDate(element.endDate);
+    }
+  });
+
+  res.send(newHealthProblemSql);
+})
+
+//Inserts new surgery for patient
+router.post('/surgery', async (req, res) => {
+  let surgerySql = (await query(`INSERT INTO surgery(date, type, location, DoctorResponsibleMINC, PatientHealthCardNumber)
+  VALUES('${req.body.date}', '${req.body.type}', '${req.body.location}', '${req.body.DoctorResponsibleMINC}', '${req.body.PatientHealthCardNumber}')`))
+
+  let allSurgeriesSql = (await query(`SELECT * FROM surgery WHERE PatientHealthCardNumber = '${req.body.PatientHealthCardNumber}'`)).result
+
+  convertDateArray(allSurgeriesSql);
+
+  res.send(allSurgeriesSql);
+})
+
+//Inserts new immunization for patient
+router.post('/immunization', async (req, res) => {
+  let immunizationSql = (await query(`INSERT INTO immunization VALUES('${req.body.type}', '${req.body.date}', '${req.body.location}', '${req.body.lot}', '${req.body.dosage}', '${req.body.site}', '${req.body.PatientHealthCardNumber}')`))
+
+  let allImmunizationsSql = (await query(`SELECT * FROM immunization WHERE PatientHealthCardNumber = '${req.body.PatientHealthCardNumber}'`)).result
+
+  convertDateArray(allImmunizationsSql);
+
+  res.send(allImmunizationsSql);
+})
+
+//Updates health problem end date to current date
+router.put('/healthproblem', async (req, res) => {
+  let updateHealthProblemSql = (await query(`UPDATE healthproblem SET endDate = CURDATE() WHERE id = '${req.body.id}'`));
+
+  let getHealthProblemsSql = (await query(`SELECT * FROM healthproblem WHERE PatientHealthCardNumber = '${req.body.PatientHealthCardNumber}'`)).result;
+
+  getHealthProblemsSql.forEach(element => {
+    element.startDate = convertDate(element.startDate);
+    if(element.endDate != null) {
+      element.endDate = convertDate(element.endDate);
+    }
+  });
+
+  res.send(getHealthProblemsSql);
+})
 
 function convertDateArray(data) {
   data.forEach(element => {
-    element.date = convertDate(element.date);
+    if(element.date != null) {
+      element.date = convertDate(element.date);
+    }
   });
   return data;
 }
