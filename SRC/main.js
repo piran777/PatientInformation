@@ -25,9 +25,9 @@ let genImmunization = require('./DataUsed/Imunization/ImmunizationAddressDate.js
 let genHealthProblemMedicationUsage = require('./DataUsed/HealthProblemMedicationUsage/HealthProblemMedicationUsageDates.js').genHealthProblemMedicationUsage;
 
 let con = mysql.createConnection({
-    host : "ec2-3-82-249-82.compute-1.amazonaws.com",
-    user : "akassara",
-    password : "sdfaswqer@#A1",
+    host : "localhost",
+    user : "root",
+    password : "",
     database : "patient_information"
 });
 
@@ -65,12 +65,12 @@ function generateDataThatIsIndependent() {
                 output.push(Object.values(illnessProbabilityData[i]));
 
                 if(i >= index*1000) {//this is just to break up the inserts
-                    ///con.query(generateSQL(illnessProbabilityData[0], "illnessprobabilitydata"), [output], function(err, result) {if(err) throw err; console.log(result);});
+                    con.query(generateSQL(illnessProbabilityData[0], "illnessprobabilitydata"), [output], function(err, result) {if(err) throw err; console.log(result);});
                     output = [];
                     index++;
                 }
             }
-            //con.query(generateSQL(illnessProbabilityData[0], "illnessprobabilitydata"), [output], function(err, result) {if(err) throw err; console.log(result);});
+            con.query(generateSQL(illnessProbabilityData[0], "illnessprobabilitydata"), [output], function(err, result) {if(err) throw err; console.log(result);});
 
             console.log("completed illnessprobability data");
         }
@@ -491,7 +491,7 @@ function getRandomInt(min, max) {
 // console.log(genTestResult(12, "test1"));
 
 //import data to database (don't run these a second time)
-// generateDataThatIsIndependent();//don't run this again it will cause issues as the data has already been added
+generateDataThatIsIndependent();//don't run this again it will cause issues as the data has already been added
 //  generateDataWithoutFK();
 // addSubstancesToPatients();
 //addFamily();
@@ -506,4 +506,4 @@ function getRandomInt(min, max) {
 // addHealthProblem();
 // addHealthProblemStatus();
 
-addHealthProblemMedicationUsage();
+// addHealthProblemMedicationUsage();

@@ -15,7 +15,7 @@ function generateIllnessProbabilityData() {
             out.push({
                 illness : illnessSymptoms[illnessIndex]["name"],
                 resultingIllness : illnessSymptoms[i]["name"],
-                probability : Math.floor(Math.random() * 10000)/10000,
+                probability : (Math.floor(Math.random() * 2000)/10000) + 0.8,
                 probabilityThreshold : Math.floor(Math.random() * 2500)/10000
             });
         }

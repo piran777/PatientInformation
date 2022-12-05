@@ -224,6 +224,46 @@ router.put('/healthproblem', async (req, res) => {
   res.send(getHealthProblemsSql);
 })
 
+router.get('/patient/riskfactors/:id', validateHealthCard, async (req, res) => {//this calculates the patients risk factors and returns them
+  let patientID = req.params.id;
+
+  let healthRisks = await query(`SELECT type, resultingIllness, probability FROM healthproblem 
+  JOIN illnessprobabilitydata ON healthproblem.type = illnessprobabilitydata.illness 
+  WHERE PatientHealthCardNumber='${patientID}' ORDER BY resultingIllness;`);
+  if(healthRisks.error !== undefined || healthRisks.result === undefined) return res.sendStatus(500);
+
+  let aggregatedHealthRisks = [];
+  let prevVal = '';
+  healthRisks.result.forEach((value) => {
+    if(prevVal !== value.resultingIllness) {
+      aggregatedHealthRisks.push({resultingIllness : value.resultingIllness, probability : value.probability})
+    } else {
+      aggregatedHealthRisks[aggregatedHealthRisks.length-1].probability *= value.probability;
+    }
+
+    prevVal = value.resultingIllness;
+  });
+  
+  aggregatedHealthRisks.forEach((value) => {
+    value.probability = 1- value.probability;
+  });
+
+  return res.json(aggregatedHealthRisks);
+})
+
+async function validateHealthCard(req, res, next) {
+  let healthCard = req.params.id;
+  if(!healthCard || healthCard.length !== 12 || isNaN(healthCard.slice(0, healthCard.length-2)) || healthCard.slice(healthCard.length-2, healthCard.length).match(/[a-zA-Z]/g).length != 2) {
+    return res.status(400).json({error : "The healthcard is invalid."});
+  }
+
+  let {result, error} = await query(`SELECT EXISTS (SELECT * FROM patient WHERE HealthCardNumber='${healthCard}') AS 'exists'`);
+  if(error !== undefined) {console.log(error); return res.sendStatus(500);}
+
+  if(!result || !result[0] || result[0].exists === 0) return res.status(400).json({error : "This healthcard doesn't exist in our database."});
+  
+  next();
+}
 function convertDateArray(data) {
   data.forEach(element => {
     if(element.date != null) {
