@@ -219,3 +219,9 @@ CREATE TABLE patient_information.surgery (
   ON UPDATE CASCADE
   );
   
+CREATE TABLE patient_information.doctorlogin (
+  id INT NOT NULL AUTO_INCREMENT,
+  MINC VARCHAR(100) NOT NULL,
+  PRIMARY KEY (id, MINC),
+  FOREIGN KEY(MINC) REFERENCES familydoctor(MINC)
+  ON UPDATE CASCADE);
