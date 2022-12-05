@@ -278,6 +278,20 @@ router.get('/patient/referrals/:id',validateHealthCard, async (req, res) => {
 
   return res.json(refrerals.result);
 })
+
+router.get('/patient/healthproblem/status/:id', async (req, res) => {
+  let hpID = req.params.id;
+  if(isNaN(hpID)) return res.status(400).json({error : "Please enter a number for the health problem id."});
+
+  let valid = await query(`SELECT EXISTS (SELECT * FROM healthproblem WHERE id=${hpID}) AS 'exists';`);
+  if(valid.error !== undefined) return res.sendStatus(500);
+  if(!valid.result || !valid.result[0] || valid.result[0].exists === 0) return res.status(400).json({error : "This health problem id doesn't exist."});
+
+  let hpStatus = await query(`SELECT * FROM healthproblemstatus WHERE HealthProblemID=${hpID};`);
+  if(hpStatus.error !== undefined) return res.sendStatus(500);
+
+  return res.json(hpStatus.result);
+})
 async function validateHealthCard(req, res, next) {
   let healthCard = req.params.id;
   if(!healthCard || healthCard.length !== 12 || isNaN(healthCard.slice(0, healthCard.length-2)) || healthCard.slice(healthCard.length-2, healthCard.length).match(/[a-zA-Z]/g).length != 2) {
