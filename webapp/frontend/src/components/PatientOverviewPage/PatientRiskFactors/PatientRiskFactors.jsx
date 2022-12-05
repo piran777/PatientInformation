@@ -1,33 +1,15 @@
-import React from 'react'
-import { useEffect } from 'react';
-import { useState } from 'react'
+import React, { useState, useEffect} from 'react'
+import GetData from '../../GeneralComp/GetData/GetData';
+import Table from '../../GeneralComp/Table/Table';
 
 export default function PatientRiskFactors({healthCardNumber}) {
-  const [riskFactors, updateRiskFactors] = RiskFactors(healthCardNumber);
-  console.log(riskFactors);
-  return (
-    <div>PatientRiskFactors</div>
-  )
-}
+  const [riskFactors, updateRiskFactors] = GetData('/api/patient/riskfactors/' + healthCardNumber);
 
-
-function RiskFactors(healthCardNumber) {
-  const [riskFactors, setRiskFactors] = useState([]);
-
-  useEffect(() => {
-    updateRiskFactors();
-  }, []);
-
-  async function updateRiskFactors() {
-    let result = await fetch('/api/patient/riskfactors/' + healthCardNumber);
-    let body = await result.json();
-
-    if(result.ok) {
-      setRiskFactors(body);
-    } else {
-      alert(body && body.error ? body.error : "There was an issue with getting the risk factors");
-    }
-  }
-  
-  return [riskFactors, updateRiskFactors];
+  return (<>
+  <h1>Illness at Risk For</h1>
+    <Table data={riskFactors} 
+    attributesOrder={['resultingIllness', 'probability']}
+    titles={['Illness', 'probability']} 
+    gridTemplate={'1fr 1fr'}/>
+    </>)
 }

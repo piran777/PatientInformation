@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import PatientRiskFactors from './PatientRiskFactors/PatientRiskFactors';
+import GetData from '../GeneralComp/GetData/GetData';
+import {useParams } from 'react-router-dom'
 
-export default function PatientOverview({healthCardNumber}) {
-  const [patient, updatePatient] = PatientInfo(healthCardNumber);
+export default function PatientOverview() {
+  const { healthCardNumber } = useParams();
+  const [patient, updatePatient] = GetData('/api/patient/healthcard/' + healthCardNumber);
 
   return (<>
     <p>Health Card Number: {patient.healthCardNumber}</p>
@@ -18,26 +21,6 @@ export default function PatientOverview({healthCardNumber}) {
     <p>Address: {patient.address}</p>
 
     <PatientRiskFactors healthCardNumber={healthCardNumber}/>
+    
     </>);
-}
-
-
-function PatientInfo(healthCardNumber) {
-  const [patient, setPatient] = useState({});
-
-  useEffect(() => {
-    updatePatient();
-  }, [])
-
-  async function updatePatient() {
-    let result = await fetch('/api/patient/healthcard/'+ healthCardNumber);
-    let body = await result.json();
-
-    if(result.ok) {
-      setPatient(body);
-    } else {
-      alert(body && body.error ? body.error : "There was an issue with getting the patient.");
-    }
-  }
-  return [patient, updatePatient];
 }
