@@ -265,6 +265,19 @@ router.get('/patient/suggestedtreatments/:appointmentID', async (req, res) => {
   return res.json(symptoms.result);
 })
 
+router.get('/patient/referrals/:id',validateHealthCard, async (req, res) => {
+  let refrerals = await query(`SELECT firstName, lastName, email, phoneNo, otherdoctor.specialization, a.healthProblem FROM (SELECT * FROM (SELECT hp.* 
+    FROM patient JOIN healthproblem AS hp 
+    ON patient.healthCardNumber=hp.PatientHealthCardNumber 
+    WHERE healthCardNumber='${req.params.id}') AS php
+    JOIN
+    healthproblemspecializationdata AS hpd ON hpd.healthProblem=php.type) AS a
+    JOIN
+    otherdoctor ON a.specilization=otherdoctor.specialization;`);
+  if(refrerals.error !== undefined) return res.sendStatus(500);
+
+  return res.json(refrerals.result);
+})
 async function validateHealthCard(req, res, next) {
   let healthCard = req.params.id;
   if(!healthCard || healthCard.length !== 12 || isNaN(healthCard.slice(0, healthCard.length-2)) || healthCard.slice(healthCard.length-2, healthCard.length).match(/[a-zA-Z]/g).length != 2) {
