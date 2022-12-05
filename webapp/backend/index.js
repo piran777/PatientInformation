@@ -63,7 +63,9 @@ router.get('/patient/healthcard/:number', async (req, res) => {
     const patientHealthCard = req.params.number
     
     const patient = await query(`SELECT c.* FROM patientcontactview c LEFT JOIN patient p ON p.firstName = c.firstName WHERE p.healthCardNumber = "${patientHealthCard}"`);
-    if(patient.result = []) {
+    if(patient.error !== undefined) {console.log(patient.error); return res.sendStatus(500);}
+
+    if(patient.result.length === 0) {
       res.status(404).send("Patient with Health Card Number: " + patientHealthCard + " not found");
     } else {
       res.send(patient.result);
@@ -292,7 +294,17 @@ router.get('/patient/healthproblem/status/:id', async (req, res) => {
   if(hpStatus.error !== undefined) return res.sendStatus(500);
 
   return res.json(hpStatus.result);
-})
+});
+
+router.get('/familydoctor/:MINC', async (req, res) => {
+  //add verification for mINC correct format
+  
+  let result = await query(`SELECT * FROM familydoctor WHERE MINC='${req.params.MINC}';`);
+  if(result.error !== undefined) return res.sendStatus(500);
+
+  return res.json(result.result);
+});
+
 async function validateHealthCard(req, res, next) {
   let healthCard = req.params.id;
   if(!healthCard || healthCard.length !== 12 || isNaN(healthCard.slice(0, healthCard.length-2)) || healthCard.slice(healthCard.length-2, healthCard.length).match(/[a-zA-Z]/g).length != 2) {
