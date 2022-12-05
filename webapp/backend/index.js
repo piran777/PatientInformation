@@ -1,5 +1,6 @@
 const express = require('express');
 const {startDatabaseConnection, query} = require('./databaseConnection');
+const cors = require ('cors');
 
 
 const app = express();
@@ -7,6 +8,7 @@ const port = 3000;
 
 const router = express.Router();
 app.use('/', express.static('../frontend/build'));
+app.use(cors());
 router.use(express.json());
 
 router.post('/appointment', async (req,res)=>{ //insert an appointment
