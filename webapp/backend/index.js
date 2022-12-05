@@ -45,10 +45,18 @@ router.get('/appointment', async (req,res)=>{ //view all appointment to be used 
   notes,
   reasonforAppointment,
   FamilyDoctorMINC,patientHealthCardNumber FROM appointment`);
-  
   res.send(sqlViewAppointment);
 
 })
+router.get('/appointment/forDoctor', async (req,res)=>{ //view all appointments for a specific doctor //mayb for calender
+
+  let sqlViewAppointment = await query ( `SELECT familyDoctorMINC, patientHealthCardNumber, startDateTime, endDateTime, notes, reasonforAppointment
+  FROM  appointment
+  WHERE familyDoctorMINC = "${req.body.familyDoctorMINC}"`);
+  res.send(sqlViewAppointment);
+
+})
+
 
 
 
