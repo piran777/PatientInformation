@@ -57,12 +57,6 @@ router.get('/appointment/forDoctor', async (req,res)=>{ //view all appointments 
 
 })
 
-
-
-
-app.use('/api', router);
-
-
 //Get patient by healthcard number
 router.get('/patient/healthcard/:number', async (req, res) => {
     const patientHealthCard = req.params.number
@@ -126,6 +120,41 @@ router.get('/patient/medicalchart/:healthcardnumber', async (req, res) => {
   res.send(patientMedicalChart);
 })
 
+//Insert a new patient
+router.post('/patient', async (req, res) => {
+  let newPatientSql = await query(`INSERT INTO patient(
+    healthCardNumber,
+    firstName,
+    lastName,
+    dateOfBirth,
+    gender,
+    ethnicity,
+    preferredLanguage,
+    religion,
+    phoneNo,
+    email,
+    address
+  )
+  VALUES (
+    '${req.body.healthCardNumber}',
+    '${req.body.firstName}',
+    '${req.body.lastName}',
+    '${req.body.dateOfBirth}',
+    '${req.body.gender}',
+    '${req.body.ethnicity}',
+    '${req.body.preferredLanguage}',
+    '${req.body.religion}',
+    '${req.body.phoneNo}',
+    '${req.body.email}',
+    '${req.body.address}'
+  )`);
+
+  let doctorView = (await query(`SELECT * FROM patientContactView WHERE firstName = '${req.body.firstName}'AND lastName = '${req.body.lastName}'`)).result;
+
+  console.log(newPatientSql);
+  res.send(doctorView);
+})
+
 
 function convertDateArray(data) {
   data.forEach(element => {
@@ -138,7 +167,7 @@ function convertDate(date) {
   return date.toISOString().replace('T', ' ').replace('Z', '').replace(':00.000', '')
 }
 
-
+app.use('/api', router);
 
 startDatabaseConnection().then(async () => {
   app.listen(port, () => {
