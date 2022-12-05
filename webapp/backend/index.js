@@ -318,7 +318,7 @@ router.get('/familydoctor/:MINC', async (req, res) => {
   let result = await query(`SELECT * FROM familydoctor WHERE MINC='${req.params.MINC}';`);
   if(result.error !== undefined) return res.sendStatus(500);
   console.log(result.result.length);
-  if(result.result === undefined || result.result[0] === undefined || result.result.length === 0) return res.status(400).json({error : "There isn't a family doctor associated with this minc"});
+  if(result.result === undefined || result.result[0] === undefined || result.result.length === 0) return res.status(400).json({error : "There isn't a family doctor associated with this MINC"});
 
   return res.json(result.result);
 });
