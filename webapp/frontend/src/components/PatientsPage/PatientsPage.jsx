@@ -15,8 +15,8 @@ export default function PatientsPage() {
         endDate : item.endDate ? new Date(item.endDate).toLocaleString() : ''
       }
     })}
-      attributesOrder={['startDate','endDate', 'firstName', 'lastName', 'healthCardNumber']}
-      titles={['Start Date', 'End Date', 'First Name', 'Last Name', 'Health Card Number']}
-      gridTemplate={'1fr 1fr 1fr 1fr 1fr'}/>
+      attributesOrder={['startDate', 'firstName', 'lastName', 'healthCardNumber']}
+      titles={['Start Date', 'First Name', 'Last Name', 'Health Card Number']}
+      gridTemplate={'1fr 1fr 1fr 1fr'}/>
   </>)
 }
