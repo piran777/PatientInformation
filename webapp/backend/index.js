@@ -352,7 +352,16 @@ router.get('/patient/family/:id', validateHealthCard, async (req, res) => {
 
   return res.json(family.result);
 });
+router.get('/patient/surgeries/:id', validateHealthCard, async (req, res) => {
+  let surgeries = await query(`SELECT date, type, location, MINC, firstName, lastName, email, phoneNo, specialization FROM 
+  (SELECT * FROM surgery WHERE PatientHealthCardNumber='${req.params.id}') AS s
+  JOIN
+  otherDoctor
+  ON otherDoctor.MINC=s.DoctorResponsibleMINC;`);
+  if(surgeries.error !== undefined) return res.sendStatus(500);
 
+  return res.json(surgeries.result);
+})
 router.get('/patient/substance/:id', validateHealthCard, async (req, res) => {
   let substance = await query(`SELECT type, startDate, endDate FROM substance WHERE PatientHealthCardNumber='${req.params.id}';`);
   if(substance.error !== undefined) return res.sendStatus(500);
