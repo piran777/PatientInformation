@@ -33,6 +33,7 @@ export default function Index() {
         <Link to='/loggedin/search'>Search For Patients</Link>
         <br/><br/>
         <Link to='/loggedin/querytreatment'>Search for treatments</Link>
+        <br></br>
     </div>
   )
 }

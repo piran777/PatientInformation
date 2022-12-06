@@ -19,6 +19,7 @@ root.render(
   <Routes>
     <Route path = "/" exact element={<Homepage />}></Route>
     <Route path = "/login" exact element={<DoctorLogin />}></Route>
+
     <Route path = "/main" exact element={<DoctorMainPage />}></Route>
     <Route path = "/main/calendar" exact element={<AppointmentCalendar />}></Route>
     <Route path = "/main/addAppointment" exact element={<AddAppointment />}></Route>
@@ -30,6 +31,7 @@ root.render(
       <Route path="patient/:healthCardNumber" element={<PatientOverview />}/>
       <Route path='patient/healthproblem/:id' element={<PatientHealthProblem />}/>
       <Route path='search' element={<SearchPatient/>}></Route>
+      
       <Route path='main' element={<></>}></Route>
       <Route path='main/calendar' element={<></>}></Route>
       <Route path='main/addAppointment' element={<></>}></Route>
