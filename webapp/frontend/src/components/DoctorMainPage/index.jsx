@@ -1,5 +1,5 @@
 import React from 'react'
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, Link} from 'react-router-dom';
 
 export default function Index() {
     const navigate = useNavigate();
@@ -27,6 +27,12 @@ export default function Index() {
         <div>Welcome to Doctor Homepage</div>
         <button type='button' onClick={handleLogOut}>Log Out</button>
         <button type='button' onClick={handleOpenCalendar}>Open Calendar</button>
+        <br/><br/>
+        <Link to='/loggedin/patients'>View Your Patients</Link>
+        <br/><br/>
+        <Link to='/loggedin/search'>Search For Patients</Link>
+        <br/><br/>
+        <Link to='/loggedin/querytreatment'>Search for treatments</Link>
     </div>
   )
 }

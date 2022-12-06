@@ -11,6 +11,7 @@ import AppointmentCalendar from './components/AppointmentCalendar/index';
 import PatientHealthProblem from './components/PatientHealthProblem/PatientHealthProblem';
 import SearchPatient from './components/SearchPage/Search';
 import AddAppointment from './components/appointment/Appointment';
+import SuggestedTreatments from './components/SuggestedTreatments/SuggestedTreatments';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -32,6 +33,7 @@ root.render(
       <Route path='main' element={<></>}></Route>
       <Route path='main/calendar' element={<></>}></Route>
       <Route path='main/addAppointment' element={<></>}></Route>
+      <Route path='querytreatment' element={<SuggestedTreatments />}></Route>
     </Route>
 
     <Route path="*" element={<p>404 Not Found</p>} />

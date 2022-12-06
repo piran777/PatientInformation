@@ -2,6 +2,7 @@ const express = require('express');
 const { rmSync } = require('fs');
 const {startDatabaseConnection, query} = require('./databaseConnection');
 const cors = require ('cors');
+const { json } = require('express');
 
 
 const app = express();
@@ -289,6 +290,16 @@ router.get('/patient/suggestedtreatments/:appointmentID', async (req, res) => {
   
   return res.json(symptoms.result);
 })
+
+router.get('/familydoctor/searchTreatment/:query', async (req, res) => {
+  let term = req.params.query;
+  if(typeof term !== 'string' && !(term instanceof String)) return res.status(400).json({error : "Please enter the query as a string."});
+
+  let result = await query(`SELECT symptom, treatment FROM symptomtreatmentdata WHERE symptom LIKE '%${term}%';`);
+  if(result.error !== undefined) return res.sendStatus(500);
+
+  return res.json(result.result);
+});
 
 router.get('/patient/referrals/:id',validateHealthCard, async (req, res) => {
   let refrerals = await query(`SELECT firstName, lastName, email, phoneNo, otherdoctor.specialization, a.healthProblem FROM (SELECT * FROM (SELECT hp.* 
