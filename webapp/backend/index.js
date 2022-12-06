@@ -78,13 +78,18 @@ router.get('/patient/healthcard/:number', async (req, res) => {
 //Get patient by name
 router.get('/patient/name/:name', async (req, res) => {
   const patientName = req.params.name.split(' ')
+  if(patientName[1] === undefined) {
+    patientName[1] = '';
+  }
 
-  const patient = await query(`SELECT * FROM patientcontactview WHERE firstName = "${patientName[0]}" AND lastName = "${patientName[1]}"`);
+  const patient = await query(`SELECT * FROM patient WHERE firstName LIKE '${patientName[0]}%' AND lastName LIKE '${patientName[1]}%'`);
 
-  if(patient.result = []) {
-    res.status(404).send("Patient with Name: " + req.params.name + " not found");
-  } else {
+  if(patient.result.length === 0) {
     res.send(patient.result);
+  } else if(patient.result.length >= 1) {
+    res.send(patient.result);
+  } else {
+    res.sendStatus(500);
   }
 })
 
