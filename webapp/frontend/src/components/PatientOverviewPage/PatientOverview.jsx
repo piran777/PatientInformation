@@ -4,6 +4,7 @@ import GetData from '../GeneralComp/GetData/GetData';
 import {useParams } from 'react-router-dom'
 import PatientHealthProblems from './PatientHealthProblems/PatientHealthProblems';
 import PatientPreviousHealthProblems from './PatientHealthProblems/PatientPreviousHealthProblems';
+import PatientImmunizations from './PatientImmunizations';
 
 export default function PatientOverview() {
   const { healthCardNumber } = useParams();
@@ -25,6 +26,7 @@ export default function PatientOverview() {
     <PatientRiskFactors healthCardNumber={healthCardNumber}/>
     <PatientHealthProblems healthCardNumber={healthCardNumber}/>
     <PatientPreviousHealthProblems healthCardNumber={healthCardNumber}/>
+    <PatientImmunizations healthCardNumber={healthCardNumber}/>
     <br/><br/>
     </>);
 

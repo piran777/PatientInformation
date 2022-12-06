@@ -335,6 +335,14 @@ async function validateHealthProblemID(req, res, next) {
 
   next();
 }
+
+router.get('/patient/immunizations/:id', validateHealthCard, async (req, res) => {
+  let immunizations = await query(`SELECT type, date, location, lot, dosage, site FROM immunization WHERE PatientHealthCardNumber='${req.params.id}' ORDER BY date;`);
+  if(immunizations.error !== undefined) return res.sendStatus(500);
+
+  return res.json(immunizations.result);
+});
+
 router.get('/patient/healthproblems/current/:id', validateHealthCard, async (req, res) => {
   let healthProblems = await query(`SELECT type, id, startDate, endDate FROM healthproblem WHERE patientHealthCardNumber= '${req.params.id}' AND endDate IS NULL;`);
   if(healthProblems.error !== undefined) return res.sendStatus(500);

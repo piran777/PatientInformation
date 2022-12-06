@@ -9,7 +9,11 @@ export default function PatientsPage() {
   return (<>
     <h1>Patients</h1>
     <Table data={patients.map((item) => {
-      return {...item, healthCardNumber : (<Link to={'/loggedin/patient/'+ item.healthCardNumber}>{item.healthCardNumber}</Link>)}
+      return {...item, 
+        healthCardNumber : (<Link to={'/loggedin/patient/'+ item.healthCardNumber}>{item.healthCardNumber}</Link>),
+        startDate : item.startDate ? new Date(item.startDate).toLocaleString() : '',
+        endDate : item.endDate ? new Date(item.endDate).toLocaleString() : ''
+      }
     })}
       attributesOrder={['startDate','endDate', 'firstName', 'lastName', 'healthCardNumber']}
       titles={['Start Date', 'End Date', 'First Name', 'Last Name', 'Health Card Number']}
