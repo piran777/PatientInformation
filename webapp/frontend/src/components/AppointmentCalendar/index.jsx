@@ -25,7 +25,7 @@ function Index() {
 
     window.onload =  async (event) => {
         const url = `http://localhost:3000/api/appointment/forDoctor`
-        const res = await axios.get(url, { familyDoctorMINC : "CAMD00010009"} );
+        const res = await axios.post(url,{ familyDoctorMINC : "CAMD00010009"});
         console.log(res.data);
         let date = moment("2004-08-14T22:00:00.000Z").format('YYYY, D, MM');
         console.log(date);
