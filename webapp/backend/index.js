@@ -1,6 +1,7 @@
 const express = require('express');
 const { rmSync } = require('fs');
 const {startDatabaseConnection, query} = require('./databaseConnection');
+const cors = require ('cors');
 
 
 const app = express();
@@ -8,6 +9,7 @@ const port = 3000;
 
 const router = express.Router();
 app.use('/', express.static('../frontend/build'));
+app.use(cors());
 router.use(express.json());
 
 router.post('/appointment', async (req,res)=>{ //insert an appointment
@@ -19,15 +21,14 @@ router.post('/appointment', async (req,res)=>{ //insert an appointment
     FamilyDoctorMINC,patientHealthCardNumber
     )
     VALUES(
-    '${req.body.startDateTime}', 
+    '${req.body.startDateTime}',
     '${req.body.endDateTime}',
     '${req.body.notes}',
     '${req.body.reasonforAppointment}',
     '${req.body.familyDoctorMINC}',
     '${req.body.patientHealthCardNumber}'
     )`);
- //2022-01-01 00:00:00.00
- //for start and end date time format
+
     let sqlViewAppointment = await query ( `SELECT  startDateTime,
     endDateTime,
     notes,
@@ -259,7 +260,19 @@ router.get('/patient/riskfactors/:id', validateHealthCard, async (req, res) => {
     value.probability = 1- value.probability;
   });
 
-  return res.json(aggregatedHealthRisks);
+  //sort and the ones over
+  aggregatedHealthRisks.sort(compareProb);
+
+  return res.json(aggregatedHealthRisks.slice(0, 10));
+
+  function compareProb(a, b) {
+    if(a.probability < b.probability) {
+      return 1;
+    } else if(a.probability > b.probability) {
+      return -1;
+    }
+    return 0;
+  }
 });
 
 router.get('/patient/suggestedtreatments/:appointmentID', async (req, res) => {
@@ -290,7 +303,7 @@ router.get('/patient/referrals/:id',validateHealthCard, async (req, res) => {
   return res.json(refrerals.result);
 })
 
-router.get('/patient/healthproblem/status/:id', async (req, res) => {
+router.get('/patient/healthproblem/status/:id',  async (req, res) => {
   let hpID = req.params.id;
   if(isNaN(hpID)) return res.status(400).json({error : "Please enter a number for the health problem id."});
 
@@ -301,18 +314,49 @@ router.get('/patient/healthproblem/status/:id', async (req, res) => {
   let hpStatus = await query(`SELECT * FROM healthproblemstatus WHERE HealthProblemID=${hpID};`);
   if(hpStatus.error !== undefined) return res.sendStatus(500);
 
+  console.log(hpStatus);
   return res.json(hpStatus.result);
 });
 
-router.get('/familydoctor/:MINC', async (req, res) => {
-  //add verification for mINC correct format
-  
-  let result = await query(`SELECT * FROM familydoctor WHERE MINC='${req.params.MINC}';`);
-  if(result.error !== undefined) return res.sendStatus(500);
+router.get('/patient/healthproblems/current/:id', validateHealthCard, async (req, res) => {
+  let healthProblems = await query(`SELECT type, id, startDate, endDate FROM healthproblem WHERE patientHealthCardNumber= '${req.params.id}' AND endDate IS NULL;`);
+  if(healthProblems.error !== undefined) return res.sendStatus(500);
 
-  return res.json(result.result);
+
+  return res.json(healthProblems.result);
+});
+router.get('/patient/healthproblems/previous/:id', validateHealthCard, async (req, res) => {
+  let healthProblems = await query(`SELECT type, id, startDate, endDate FROM healthproblem WHERE patientHealthCardNumber= '${req.params.id}' AND endDate IS NOT NULL;`);
+  if(healthProblems.error !== undefined) return res.sendStatus(500);
+
+
+  return res.json(healthProblems.result);
+})
+router.get('/familydoctor/patients/:MINC',checkFamilyDoctorExists, async(req, res) => {
+  let patients = await query(`SELECT fdpa.startDate, fdpa.endDate, p.firstName, p.lastName, p.healthCardNumber FROM 
+  (SELECT * FROM familydoctorpatientassignment WHERE familyDoctorMINC='${req.params.MINC}' AND endDate IS NOT NULL) AS fdpa
+  JOIN 
+  (SELECT * FROM patient) AS p
+  ON p.healthCardNumber = fdpa.patientHealthCardNumber;`);
+  
+  if(patients.error !== undefined) return res.sendStatus(500);
+
+  return res.json(patients.result);
 });
 
+router.get('/familydoctor/:MINC', checkFamilyDoctorExists, async (req, res) => {
+  //add verification for mINC correct format
+  return res.json(req.familyDoctor);
+});
+
+async function checkFamilyDoctorExists(req, res, next) {
+  let result = await query(`SELECT * FROM familydoctor WHERE MINC='${req.params.MINC}';`);
+  if(result.error !== undefined) return res.sendStatus(500);
+  if(result.result === undefined || result.result[0] === undefined || result.result.length === 0) return res.status(400).json({error : "There isn't a family doctor associated with this MINC"});
+  
+  req.familyDoctor = result.result;
+  next();
+}
 async function validateHealthCard(req, res, next) {
   let healthCard = req.params.id;
   if(!healthCard || healthCard.length !== 12 || isNaN(healthCard.slice(0, healthCard.length-2)) || healthCard.slice(healthCard.length-2, healthCard.length).match(/[a-zA-Z]/g).length != 2) {
@@ -320,7 +364,7 @@ async function validateHealthCard(req, res, next) {
   }
 
   let {result, error} = await query(`SELECT EXISTS (SELECT * FROM patient WHERE HealthCardNumber='${healthCard}') AS 'exists'`);
-  if(error !== undefined) {console.log(error); return res.sendStatus(500);}
+  if(error !== undefined) return res.sendStatus(500);
 
   if(!result || !result[0] || result[0].exists === 0) return res.status(400).json({error : "This healthcard doesn't exist in our database."});
   
