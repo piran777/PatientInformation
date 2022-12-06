@@ -393,6 +393,18 @@ router.get('/familydoctor/patients/:MINC',checkFamilyDoctorExists, async(req, re
   return res.json(patients.result);
 });
 
+router.get('/familydoctor/prevpatients/:MINC', checkFamilyDoctorExists, async (req, res) => {
+  let patients = await query(`SELECT fdpa.startDate, fdpa.endDate, p.firstName, p.lastName, p.healthCardNumber FROM 
+  (SELECT * FROM familydoctorpatientassignment WHERE familyDoctorMINC='${req.params.MINC}' AND endDate IS NOT NULL) AS fdpa
+  JOIN 
+  (SELECT * FROM patient) AS p
+  ON p.healthCardNumber = fdpa.patientHealthCardNumber;`);
+  
+  if(patients.error !== undefined) return res.sendStatus(500);
+
+  return res.json(patients.result);
+});
+
 router.get('/familydoctor/:MINC', checkFamilyDoctorExists, async (req, res) => {
   //add verification for mINC correct format
   return res.json(req.familyDoctor);
