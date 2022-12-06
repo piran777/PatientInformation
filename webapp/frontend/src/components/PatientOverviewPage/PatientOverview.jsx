@@ -5,6 +5,7 @@ import {useParams } from 'react-router-dom'
 import PatientHealthProblems from './PatientHealthProblems/PatientHealthProblems';
 import PatientPreviousHealthProblems from './PatientHealthProblems/PatientPreviousHealthProblems';
 import PatientImmunizations from './PatientImmunizations';
+import PatientFamily from './PatientFamily';
 
 export default function PatientOverview() {
   const { healthCardNumber } = useParams();
@@ -27,6 +28,7 @@ export default function PatientOverview() {
     <PatientHealthProblems healthCardNumber={healthCardNumber}/>
     <PatientPreviousHealthProblems healthCardNumber={healthCardNumber}/>
     <PatientImmunizations healthCardNumber={healthCardNumber}/>
+    <PatientFamily healthCardNumber={healthCardNumber}/>
     <br/><br/>
     </>);
 
