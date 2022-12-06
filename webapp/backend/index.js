@@ -306,7 +306,7 @@ router.get('/patient/referrals/:id',validateHealthCard, async (req, res) => {
 router.get('/patient/healthproblem/status/:id', validateHealthProblemID,  async (req, res) => {
   let hpID = req.params.id;
  
-  let hpStatus = await query(`SELECT * FROM healthproblemstatus WHERE HealthProblemID=${hpID};`);
+  let hpStatus = await query(`SELECT * FROM healthproblemstatus WHERE HealthProblemID=${hpID} ORDER BY dateTime DESC;`);
   if(hpStatus.error !== undefined) return res.sendStatus(500);
 
   return res.json(hpStatus.result);
