@@ -20,8 +20,7 @@ root.render(
     <Route path = "/login" exact element={<DoctorLogin />}></Route>
     <Route path = "/main" exact element={<DoctorMainPage />}></Route>
     <Route path = "/main/calendar" exact element={<AppointmentCalendar />}></Route>
-    <Route path = "/main/search" exact element={<SearchPatient/>}></Route>
-
+    
 
     {/* These routes are for when the family doctor is logged in (replace true with w
       something that will check if a doctor is logged in*/}
@@ -29,6 +28,7 @@ root.render(
       <Route path="patients" element={<PatientsPage />}/>
       <Route path="patient/:healthCardNumber" element={<PatientOverview />}/>
       <Route path='patient/healthproblem/:id' element={<PatientHealthProblem />}/>
+      <Route path = "/search" exact element={<SearchPatient/>}></Route>
     </Route>
 
     <Route path="*" element={<p>404 Not Found</p>} />
