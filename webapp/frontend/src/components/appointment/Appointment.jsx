@@ -25,12 +25,20 @@ export default function Index() {
         familyDoctorMINC: data.familyDoctorMINC,
         patientHealthCardNumber:  data.patientHealthCardNumber
       } 
-      const res = await axios.post(url,rest.then(function (response) {
+      const res = await axios.post(url, {
+        startDateTime: data.startDateTime,
+        endDateTime: data.endDateTime,
+        notes: data.notes,
+        reasonforAppointment: data.reasonforAppointment,
+        familyDoctorMINC: data.familyDoctorMINC,
+        patientHealthCardNumber:  data.patientHealthCardNumber
+      })
+      .then(function (response) {
         console.log(response);
       })
       .catch(function (error) {
         console.log(error);
-      }));
+      });
       setRes("Appointment Added");
 
     }
