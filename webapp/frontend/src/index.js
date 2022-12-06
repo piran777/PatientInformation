@@ -12,7 +12,6 @@ import PatientHealthProblem from './components/PatientHealthProblem/PatientHealt
 import SearchPatient from './components/SearchPage/Search';
 import AddAppointment from './components/appointment/Appointment';
 
-console.log(localStorage.getItem('MINC'));
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>

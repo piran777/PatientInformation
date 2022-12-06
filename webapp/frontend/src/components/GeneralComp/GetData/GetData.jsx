@@ -6,7 +6,7 @@ export default function GetData(path) {
   useEffect(() => {
     updateData();
   }, []);
-
+  
   const updateData = async () => {
     let result = await fetch(path);
     let body = await result.json();
