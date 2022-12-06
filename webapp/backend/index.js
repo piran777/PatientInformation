@@ -34,8 +34,7 @@ router.post('/appointment/add', async (req,res)=>{ //insert an appointment
     endDateTime,
     notes,
     reasonforAppointment,
-    familyDoctorMINC,patientHealthCardNumber FROM appointment WHERE startDateTime = '${req.body.startDateTime}' AND  endDateTime ='${req.body.endDateTime}' AND NOTES =  '${req.body.notes}'
-    AND reasonforAppointment = '${req.body.reasonforAppointment}' AND familyDoctorMINC = '${req.body.familyDoctorMINC}' AND patientHealthCardNumber = '${req.body.patientHealthCardNumber}'`).result;
+    familyDoctorMINC,patientHealthCardNumber FROM appointment WHERE familyDoctorMINC = '${req.body.familyDoctorMINC}'`).result;
      
   console.log(sqlAppointment)
   console.log(req.body)
