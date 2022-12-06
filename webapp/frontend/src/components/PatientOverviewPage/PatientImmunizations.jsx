@@ -13,6 +13,6 @@ export default function PatientImmunizations({healthCardNumber}) {
     })}
     attributesOrder={['date', 'type', 'lot', 'dosage', 'site', 'location']}
     titles={['Date', 'Type', 'Lot', 'Dosage', 'Site', 'Location']}
-    gridTemplate={'2fr 1fr 1fr 1fr 1fr 4fr'}/>
+    gridTemplate={'1fr 1fr 1fr 1fr 1fr 4fr'}/>
   </>)
 }
