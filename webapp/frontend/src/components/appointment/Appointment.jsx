@@ -56,9 +56,9 @@ export default function Index() {
       <form onSubmit= {handleSubmit}>
       <h1>Add appointment</h1>
       <br/>
-      <input type = "text" placeholder = "ex: 2022-12-31 00:00:00.00" name="startDateTime" 
+      <input type = "text" placeholder = "ex: 2022-31-12 00:00:00.00" name="startDateTime" 
         onChange={handleChange} value = {data.startDateTime } required/>
-        <input type = "text" placeholder = "ex: 2022-12-31 00:00:00.00" name="endDateTime" 
+        <input type = "text" placeholder = "ex: 2022-31-12 00:00:00.00" name="endDateTime" 
        onChange={handleChange} value = {data.endDateTime} required/>
        <input type = "text" placeholder = "ex: notes" name="notes" 
        onChange={handleChange} value = {data.notes} required/>
