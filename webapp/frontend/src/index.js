@@ -8,6 +8,7 @@ import DoctorMainPage from './components/DoctorMainPage/index';
 import PatientsPage from './components/PatientsPage/PatientsPage';
 import PatientOverview from './components/PatientOverviewPage/PatientOverview';
 import AppointmentCalendar from './components/AppointmentCalendar/index';
+import PatientHealthProblem from './components/PatientHealthProblem/PatientHealthProblem';
 
 console.log(localStorage.getItem('MINC'));
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -26,6 +27,7 @@ root.render(
     <Route path='/loggedin' element={localStorage.getItem('MINC') ? <Outlet /> : <Homepage />}>
       <Route path="patients" element={<PatientsPage />}/>
       <Route path="patient/:healthCardNumber" element={<PatientOverview />}/>
+      <Route path='patient/healthproblem/:id' element={<PatientHealthProblem />}/>
     </Route>
 
     <Route path="*" element={<p>404 Not Found</p>} />

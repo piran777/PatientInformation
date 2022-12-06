@@ -298,7 +298,29 @@ router.get('/patient/referrals/:id',validateHealthCard, async (req, res) => {
   return res.json(refrerals.result);
 })
 
-router.get('/patient/healthproblem/status/:id',  async (req, res) => {
+router.get('/patient/healthproblem/status/:id', validateHealthProblemID,  async (req, res) => {
+  let hpID = req.params.id;
+ 
+  let hpStatus = await query(`SELECT * FROM healthproblemstatus WHERE HealthProblemID=${hpID};`);
+  if(hpStatus.error !== undefined) return res.sendStatus(500);
+
+  return res.json(hpStatus.result);
+});
+
+router.get('/patient/healthproblem/medication/:id', validateHealthProblemID, async (req, res) => {
+  let hpID = req.params.id;
+
+  let hpMedication = await query(`SELECT hpm.startDate, hpm.dosage, hpm.frequency, hpm.endDate, m.name FROM 
+  (SELECT * FROM healthproblemmedicationusage WHERE healthProblemID=${hpID}) AS hpm
+  JOIN
+  (SELECT * FROM medication) AS m;`);
+
+  if(hpMedication.error !== undefined) return res.sendStatus(500);
+
+  return res.json(hpMedication.result);
+})
+
+async function validateHealthProblemID(req, res, next) {
   let hpID = req.params.id;
   if(isNaN(hpID)) return res.status(400).json({error : "Please enter a number for the health problem id."});
 
@@ -306,13 +328,8 @@ router.get('/patient/healthproblem/status/:id',  async (req, res) => {
   if(valid.error !== undefined) return res.sendStatus(500);
   if(!valid.result || !valid.result[0] || valid.result[0].exists === 0) return res.status(400).json({error : "This health problem id doesn't exist."});
 
-  let hpStatus = await query(`SELECT * FROM healthproblemstatus WHERE HealthProblemID=${hpID};`);
-  if(hpStatus.error !== undefined) return res.sendStatus(500);
-
-  console.log(hpStatus);
-  return res.json(hpStatus.result);
-});
-
+  next();
+}
 router.get('/patient/healthproblems/current/:id', validateHealthCard, async (req, res) => {
   let healthProblems = await query(`SELECT type, id, startDate, endDate FROM healthproblem WHERE patientHealthCardNumber= '${req.params.id}' AND endDate IS NULL;`);
   if(healthProblems.error !== undefined) return res.sendStatus(500);
