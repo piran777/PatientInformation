@@ -307,7 +307,7 @@ router.get('/patient/referrals/:id',validateHealthCard, async (req, res) => {
 router.get('/patient/healthproblem/status/:id', validateHealthProblemID,  async (req, res) => {
   let hpID = req.params.id;
  
-  let hpStatus = await query(`SELECT * FROM healthproblemstatus WHERE HealthProblemID=${hpID};`);
+  let hpStatus = await query(`SELECT * FROM healthproblemstatus WHERE HealthProblemID=${hpID} ORDER BY dateTime DESC;`);
   if(hpStatus.error !== undefined) return res.sendStatus(500);
 
   return res.json(hpStatus.result);
@@ -353,7 +353,22 @@ router.get('/patient/family/:id', validateHealthCard, async (req, res) => {
 
   return res.json(family.result);
 });
+router.get('/patient/surgeries/:id', validateHealthCard, async (req, res) => {
+  let surgeries = await query(`SELECT date, type, location, MINC, firstName, lastName, email, phoneNo, specialization FROM 
+  (SELECT * FROM surgery WHERE PatientHealthCardNumber='${req.params.id}') AS s
+  JOIN
+  otherDoctor
+  ON otherDoctor.MINC=s.DoctorResponsibleMINC;`);
+  if(surgeries.error !== undefined) return res.sendStatus(500);
 
+  return res.json(surgeries.result);
+})
+router.get('/patient/substance/:id', validateHealthCard, async (req, res) => {
+  let substance = await query(`SELECT type, startDate, endDate FROM substance WHERE PatientHealthCardNumber='${req.params.id}';`);
+  if(substance.error !== undefined) return res.sendStatus(500);
+
+  return res.json(substance.result);
+})
 router.get('/patient/healthproblems/current/:id', validateHealthCard, async (req, res) => {
   let healthProblems = await query(`SELECT type, id, startDate, endDate FROM healthproblem WHERE patientHealthCardNumber= '${req.params.id}' AND endDate IS NULL;`);
   if(healthProblems.error !== undefined) return res.sendStatus(500);
@@ -369,6 +384,17 @@ router.get('/patient/healthproblems/previous/:id', validateHealthCard, async (re
   return res.json(healthProblems.result);
 })
 router.get('/familydoctor/patients/:MINC',checkFamilyDoctorExists, async(req, res) => {
+  let patients = await query(`SELECT fdpa.startDate, fdpa.endDate, p.firstName, p.lastName, p.healthCardNumber FROM 
+  (SELECT * FROM familydoctorpatientassignment WHERE familyDoctorMINC='${req.params.MINC}' AND endDate IS NULL) AS fdpa
+  JOIN 
+  (SELECT * FROM patient) AS p
+  ON p.healthCardNumber = fdpa.patientHealthCardNumber;`);
+  
+  if(patients.error !== undefined) return res.sendStatus(500);
+  return res.json(patients.result);
+});
+
+router.get('/familydoctor/prevpatients/:MINC', checkFamilyDoctorExists, async (req, res) => {
   let patients = await query(`SELECT fdpa.startDate, fdpa.endDate, p.firstName, p.lastName, p.healthCardNumber FROM 
   (SELECT * FROM familydoctorpatientassignment WHERE familyDoctorMINC='${req.params.MINC}' AND endDate IS NOT NULL) AS fdpa
   JOIN 

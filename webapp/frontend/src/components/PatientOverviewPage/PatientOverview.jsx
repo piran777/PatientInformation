@@ -6,6 +6,9 @@ import PatientHealthProblems from './PatientHealthProblems/PatientHealthProblems
 import PatientPreviousHealthProblems from './PatientHealthProblems/PatientPreviousHealthProblems';
 import PatientImmunizations from './PatientImmunizations';
 import PatientFamily from './PatientFamily';
+import PatientSubstance from './PatientSubstance';
+import PatientSurgery from './PatientSurgery';
+import Referral from './Referral';
 
 export default function PatientOverview() {
   const { healthCardNumber } = useParams();
@@ -29,6 +32,9 @@ export default function PatientOverview() {
     <PatientPreviousHealthProblems healthCardNumber={healthCardNumber}/>
     <PatientImmunizations healthCardNumber={healthCardNumber}/>
     <PatientFamily healthCardNumber={healthCardNumber}/>
+    <PatientSubstance healthCardNumber={healthCardNumber} />
+    <PatientSurgery healthCardNumber={healthCardNumber} />
+    <Referral healthCardNumber={healthCardNumber} />
     <br/><br/>
     </>);
 
