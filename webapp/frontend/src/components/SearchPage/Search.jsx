@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import './Search.css';
 
 export default function SearchPatient() {
     var healthCard = '';
