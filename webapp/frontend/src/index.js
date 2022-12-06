@@ -7,6 +7,7 @@ import DoctorLogin from './components/DoctorLogin/index'
 import DoctorMainPage from './components/DoctorMainPage/index';
 import PatientsPage from './components/PatientsPage/PatientsPage';
 import PatientOverview from './components/PatientOverviewPage/PatientOverview';
+import AppointmentCalendar from './components/AppointmentCalendar/index';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -15,8 +16,9 @@ root.render(
   <Routes>
     <Route path = "/" exact element={<Homepage />}></Route>
     <Route path = "/login" exact element={<DoctorLogin />}></Route>
-
     <Route path = "/main" exact element={<DoctorMainPage />}></Route>
+    <Route path = "/main/calendar" exact element={<AppointmentCalendar />}></Route>
+
 
 
     {/* These routes are for when the family doctor is logged in (replace true with w

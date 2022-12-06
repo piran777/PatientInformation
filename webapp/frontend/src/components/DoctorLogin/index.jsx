@@ -18,6 +18,7 @@ export default function Index() {
       const url = `http://localhost:3000/api/familydoctor/${data.MINC}`;
       const res = await axios.get(url);
       setError("Succesfully Logged In");
+      localStorage.setItem("MINC", res.data[0].MINC);
       setTimeout(function() {
         navigate ('/main')
       }, 1000);
