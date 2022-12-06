@@ -8,8 +8,10 @@ import DoctorMainPage from './components/DoctorMainPage/index';
 import PatientsPage from './components/PatientsPage/PatientsPage';
 import PatientOverview from './components/PatientOverviewPage/PatientOverview';
 import AppointmentCalendar from './components/AppointmentCalendar/index';
+import PatientHealthProblem from './components/PatientHealthProblem/PatientHealthProblem';
+import SearchPatient from './components/SearchPage/Search';
 
-
+console.log(localStorage.getItem('MINC'));
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
@@ -18,14 +20,15 @@ root.render(
     <Route path = "/login" exact element={<DoctorLogin />}></Route>
     <Route path = "/main" exact element={<DoctorMainPage />}></Route>
     <Route path = "/main/calendar" exact element={<AppointmentCalendar />}></Route>
-
-
+    
 
     {/* These routes are for when the family doctor is logged in (replace true with w
       something that will check if a doctor is logged in*/}
-    <Route path='/loggedin' element={true ? <Outlet /> : <Homepage />}>
+    <Route path='/loggedin' element={localStorage.getItem('MINC') ? <Outlet /> : <Homepage />}>
       <Route path="patients" element={<PatientsPage />}/>
       <Route path="patient/:healthCardNumber" element={<PatientOverview />}/>
+      <Route path='patient/healthproblem/:id' element={<PatientHealthProblem />}/>
+      <Route path = "/search" exact element={<SearchPatient/>}></Route>
     </Route>
 
     <Route path="*" element={<p>404 Not Found</p>} />

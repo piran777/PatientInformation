@@ -1,7 +1,27 @@
 {
   "dependencies": {
+    "express": "^4.18.2",
     "fs": "^0.0.1-security",
     "mysql2": "^2.3.3",
+    "nodemon": "^2.0.20",
     "path": "^0.12.7"
-  }
+  },
+  "name": "assignment-3-group-20",
+  "description": "This repo will contain the data source for your project and the sql files for each questions.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexandraLHeureuxECE/assignment-3-group-20.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexandraLHeureuxECE/assignment-3-group-20/issues"
+  },
+  "homepage": "https://github.com/AlexandraLHeureuxECE/assignment-3-group-20#readme"
 }

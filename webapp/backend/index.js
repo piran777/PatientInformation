@@ -79,13 +79,18 @@ router.get('/patient/healthcard/:number', async (req, res) => {
 //Get patient by name
 router.get('/patient/name/:name', async (req, res) => {
   const patientName = req.params.name.split(' ')
+  if(patientName[1] === undefined) {
+    patientName[1] = '';
+  }
 
-  const patient = await query(`SELECT * FROM patientcontactview WHERE firstName = "${patientName[0]}" AND lastName = "${patientName[1]}"`);
+  const patient = await query(`SELECT * FROM patient WHERE firstName LIKE '${patientName[0]}%' AND lastName LIKE '${patientName[1]}%'`);
 
-  if(patient.result = []) {
-    res.status(404).send("Patient with Name: " + req.params.name + " not found");
-  } else {
+  if(patient.result.length === 0) {
     res.send(patient.result);
+  } else if(patient.result.length >= 1) {
+    res.send(patient.result);
+  } else {
+    res.sendStatus(500);
   }
 })
 
@@ -298,7 +303,29 @@ router.get('/patient/referrals/:id',validateHealthCard, async (req, res) => {
   return res.json(refrerals.result);
 })
 
-router.get('/patient/healthproblem/status/:id', async (req, res) => {
+router.get('/patient/healthproblem/status/:id', validateHealthProblemID,  async (req, res) => {
+  let hpID = req.params.id;
+ 
+  let hpStatus = await query(`SELECT * FROM healthproblemstatus WHERE HealthProblemID=${hpID};`);
+  if(hpStatus.error !== undefined) return res.sendStatus(500);
+
+  return res.json(hpStatus.result);
+});
+
+router.get('/patient/healthproblem/medication/:id', validateHealthProblemID, async (req, res) => {
+  let hpID = req.params.id;
+
+  let hpMedication = await query(`SELECT hpm.startDate, hpm.dosage, hpm.frequency, hpm.endDate, m.name FROM 
+  (SELECT * FROM healthproblemmedicationusage WHERE healthProblemID=${hpID}) AS hpm
+  JOIN
+  (SELECT * FROM medication) AS m;`);
+
+  if(hpMedication.error !== undefined) return res.sendStatus(500);
+
+  return res.json(hpMedication.result);
+})
+
+async function validateHealthProblemID(req, res, next) {
   let hpID = req.params.id;
   if(isNaN(hpID)) return res.status(400).json({error : "Please enter a number for the health problem id."});
 
@@ -306,23 +333,65 @@ router.get('/patient/healthproblem/status/:id', async (req, res) => {
   if(valid.error !== undefined) return res.sendStatus(500);
   if(!valid.result || !valid.result[0] || valid.result[0].exists === 0) return res.status(400).json({error : "This health problem id doesn't exist."});
 
-  let hpStatus = await query(`SELECT * FROM healthproblemstatus WHERE HealthProblemID=${hpID};`);
-  if(hpStatus.error !== undefined) return res.sendStatus(500);
+  next();
+}
 
-  return res.json(hpStatus.result);
+router.get('/patient/immunizations/:id', validateHealthCard, async (req, res) => {
+  let immunizations = await query(`SELECT type, date, location, lot, dosage, site FROM immunization WHERE PatientHealthCardNumber='${req.params.id}' ORDER BY date;`);
+  if(immunizations.error !== undefined) return res.sendStatus(500);
+
+  return res.json(immunizations.result);
 });
 
-router.get('/familydoctor/:MINC', async (req, res) => {
-  //add verification for mINC correct format
+router.get('/patient/family/:id', validateHealthCard, async (req, res) => {
+  let family = await query(`SELECT relationshipTopatient, firstName, lastName, phoneNo, email, type, startDate, endDate FROM 
+  (SELECT * FROM family JOIN patient ON patientID=HealthCardNumber WHERE patientID='${req.params.id}') AS pf
+  JOIN
+  healthproblem ON pf.familyID=PatientHealthCardNumber;`);
+  if(family.error !== undefined) return res.sendStatus(500);
+
+  return res.json(family.result);
+});
+
+router.get('/patient/healthproblems/current/:id', validateHealthCard, async (req, res) => {
+  let healthProblems = await query(`SELECT type, id, startDate, endDate FROM healthproblem WHERE patientHealthCardNumber= '${req.params.id}' AND endDate IS NULL;`);
+  if(healthProblems.error !== undefined) return res.sendStatus(500);
+
+
+  return res.json(healthProblems.result);
+});
+router.get('/patient/healthproblems/previous/:id', validateHealthCard, async (req, res) => {
+  let healthProblems = await query(`SELECT type, id, startDate, endDate FROM healthproblem WHERE patientHealthCardNumber= '${req.params.id}' AND endDate IS NOT NULL;`);
+  if(healthProblems.error !== undefined) return res.sendStatus(500);
+
+
+  return res.json(healthProblems.result);
+})
+router.get('/familydoctor/patients/:MINC',checkFamilyDoctorExists, async(req, res) => {
+  let patients = await query(`SELECT fdpa.startDate, fdpa.endDate, p.firstName, p.lastName, p.healthCardNumber FROM 
+  (SELECT * FROM familydoctorpatientassignment WHERE familyDoctorMINC='${req.params.MINC}' AND endDate IS NOT NULL) AS fdpa
+  JOIN 
+  (SELECT * FROM patient) AS p
+  ON p.healthCardNumber = fdpa.patientHealthCardNumber;`);
   
+  if(patients.error !== undefined) return res.sendStatus(500);
+
+  return res.json(patients.result);
+});
+
+router.get('/familydoctor/:MINC', checkFamilyDoctorExists, async (req, res) => {
+  //add verification for mINC correct format
+  return res.json(req.familyDoctor);
+});
+
+async function checkFamilyDoctorExists(req, res, next) {
   let result = await query(`SELECT * FROM familydoctor WHERE MINC='${req.params.MINC}';`);
   if(result.error !== undefined) return res.sendStatus(500);
-  console.log(result.result.length);
   if(result.result === undefined || result.result[0] === undefined || result.result.length === 0) return res.status(400).json({error : "There isn't a family doctor associated with this MINC"});
-
-  return res.json(result.result);
-});
-
+  
+  req.familyDoctor = result.result;
+  next();
+}
 async function validateHealthCard(req, res, next) {
   let healthCard = req.params.id;
   if(!healthCard || healthCard.length !== 12 || isNaN(healthCard.slice(0, healthCard.length-2)) || healthCard.slice(healthCard.length-2, healthCard.length).match(/[a-zA-Z]/g).length != 2) {
