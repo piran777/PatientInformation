@@ -298,7 +298,7 @@ router.get('/patient/referrals/:id',validateHealthCard, async (req, res) => {
   return res.json(refrerals.result);
 })
 
-router.get('/patient/healthproblem/status/:id', async (req, res) => {
+router.get('/patient/healthproblem/status/:id',  async (req, res) => {
   let hpID = req.params.id;
   if(isNaN(hpID)) return res.status(400).json({error : "Please enter a number for the health problem id."});
 
@@ -309,20 +309,38 @@ router.get('/patient/healthproblem/status/:id', async (req, res) => {
   let hpStatus = await query(`SELECT * FROM healthproblemstatus WHERE HealthProblemID=${hpID};`);
   if(hpStatus.error !== undefined) return res.sendStatus(500);
 
+  console.log(hpStatus);
   return res.json(hpStatus.result);
 });
 
-router.get('/familydoctor/:MINC', async (req, res) => {
-  //add verification for mINC correct format
+router.get('/patient/healthproblems/:id', validateHealthCard, async (req, res) => {
+  //let healthProblems = await query()
+});
+router.get('/familydoctor/patients/:MINC',checkFamilyDoctorExists, async(req, res) => {
+  let patients = await query(`SELECT fdpa.startDate, fdpa.endDate, p.firstName, p.lastName, p.healthCardNumber FROM 
+  (SELECT * FROM familydoctorpatientassignment WHERE familyDoctorMINC='${req.params.MINC}' AND endDate IS NOT NULL) AS fdpa
+  JOIN 
+  (SELECT * FROM patient) AS p
+  ON p.healthCardNumber = fdpa.patientHealthCardNumber;`);
   
-  let result = await query(`SELECT * FROM familydoctor WHERE MINC='${req.params.MINC}';`);
-  if(result.error !== undefined) return res.sendStatus(500);
-  console.log(result.result.length);
-  if(result.result === undefined || result.result[0] === undefined || result.result.length === 0) return res.status(400).json({error : "There isn't a family doctor associated with this MINC"});
+  if(patients.error !== undefined) return res.sendStatus(500);
 
-  return res.json(result.result);
+  return res.json(patients.result);
 });
 
+router.get('/familydoctor/:MINC', checkFamilyDoctorExists, async (req, res) => {
+  //add verification for mINC correct format
+  return res.json(req.familyDoctor);
+});
+
+async function checkFamilyDoctorExists(req, res, next) {
+  let result = await query(`SELECT * FROM familydoctor WHERE MINC='${req.params.MINC}';`);
+  if(result.error !== undefined) return res.sendStatus(500);
+  if(result.result === undefined || result.result[0] === undefined || result.result.length === 0) return res.status(400).json({error : "There isn't a family doctor associated with this MINC"});
+  
+  req.familyDoctor = result.result;
+  next();
+}
 async function validateHealthCard(req, res, next) {
   let healthCard = req.params.id;
   if(!healthCard || healthCard.length !== 12 || isNaN(healthCard.slice(0, healthCard.length-2)) || healthCard.slice(healthCard.length-2, healthCard.length).match(/[a-zA-Z]/g).length != 2) {

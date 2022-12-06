@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import PatientRiskFactors from './PatientRiskFactors/PatientRiskFactors';
 import GetData from '../GeneralComp/GetData/GetData';
 import {useParams } from 'react-router-dom'
 
 export default function PatientOverview() {
   const { healthCardNumber } = useParams();
-  const [patient, updatePatient] = GetData('/api/patient/healthcard/' + healthCardNumber);
+  const [patient] = GetData('/api/patient/healthcard/' + healthCardNumber);
 
   return (<>
     <p>Health Card Number: {patient.healthCardNumber}</p>
@@ -21,6 +21,5 @@ export default function PatientOverview() {
     <p>Address: {patient.address}</p>
 
     <PatientRiskFactors healthCardNumber={healthCardNumber}/>
-    
     </>);
 }

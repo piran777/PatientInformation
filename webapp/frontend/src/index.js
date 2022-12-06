@@ -22,7 +22,7 @@ root.render(
     {/* These routes are for when the family doctor is logged in (replace true with w
       something that will check if a doctor is logged in*/}
     <Route path='/loggedin' element={true ? <Outlet /> : <Homepage />}>
-      <Route path="patients" element={<PatientsPage />}/>
+      <Route path="patients" element={<PatientsPage MINC={'CAMD00014269'}/>}/>
       <Route path="patient/:healthCardNumber" element={<PatientOverview />}/>
     </Route>
 
