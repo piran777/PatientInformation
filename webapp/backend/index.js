@@ -313,9 +313,20 @@ router.get('/patient/healthproblem/status/:id',  async (req, res) => {
   return res.json(hpStatus.result);
 });
 
-router.get('/patient/healthproblems/:id', validateHealthCard, async (req, res) => {
-  //let healthProblems = await query()
+router.get('/patient/healthproblems/current/:id', validateHealthCard, async (req, res) => {
+  let healthProblems = await query(`SELECT type, id, startDate, endDate FROM healthproblem WHERE patientHealthCardNumber= '${req.params.id}' AND endDate IS NULL;`);
+  if(healthProblems.error !== undefined) return res.sendStatus(500);
+
+
+  return res.json(healthProblems.result);
 });
+router.get('/patient/healthproblems/previous/:id', validateHealthCard, async (req, res) => {
+  let healthProblems = await query(`SELECT type, id, startDate, endDate FROM healthproblem WHERE patientHealthCardNumber= '${req.params.id}' AND endDate IS NOT NULL;`);
+  if(healthProblems.error !== undefined) return res.sendStatus(500);
+
+
+  return res.json(healthProblems.result);
+})
 router.get('/familydoctor/patients/:MINC',checkFamilyDoctorExists, async(req, res) => {
   let patients = await query(`SELECT fdpa.startDate, fdpa.endDate, p.firstName, p.lastName, p.healthCardNumber FROM 
   (SELECT * FROM familydoctorpatientassignment WHERE familyDoctorMINC='${req.params.MINC}' AND endDate IS NOT NULL) AS fdpa

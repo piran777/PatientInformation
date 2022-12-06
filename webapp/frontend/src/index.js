@@ -9,7 +9,7 @@ import PatientsPage from './components/PatientsPage/PatientsPage';
 import PatientOverview from './components/PatientOverviewPage/PatientOverview';
 import AppointmentCalendar from './components/AppointmentCalendar/index';
 
-
+console.log(localStorage.getItem('MINC'));
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
@@ -23,8 +23,8 @@ root.render(
 
     {/* These routes are for when the family doctor is logged in (replace true with w
       something that will check if a doctor is logged in*/}
-    <Route path='/loggedin' element={true ? <Outlet /> : <Homepage />}>
-      <Route path="patients" element={<PatientsPage MINC={'CAMD00014269'}/>}/>
+    <Route path='/loggedin' element={localStorage.getItem('MINC') ? <Outlet /> : <Homepage />}>
+      <Route path="patients" element={<PatientsPage />}/>
       <Route path="patient/:healthCardNumber" element={<PatientOverview />}/>
     </Route>
 

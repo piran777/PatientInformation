@@ -3,8 +3,8 @@ import GetData from '../GeneralComp/GetData/GetData'
 import Table from '../GeneralComp/Table/Table';
 import {Link} from 'react-router-dom'; 
 
-export default function PatientsPage({MINC}) {
-  const [patients] = GetData('/api/familydoctor/patients/' + MINC);
+export default function PatientsPage() {
+  const [patients] = GetData('/api/familydoctor/patients/' + localStorage.getItem('MINC'));
 
   return (<>
     <h1>Patients</h1>
