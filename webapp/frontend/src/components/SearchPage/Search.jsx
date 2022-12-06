@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import PatientOverview from '../PatientOverviewPage/PatientOverview'
 
 export default function SearchPatient() {
     var healthCard = '';

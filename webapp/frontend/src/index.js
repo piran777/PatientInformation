@@ -8,6 +8,7 @@ import DoctorMainPage from './components/DoctorMainPage/index';
 import PatientsPage from './components/PatientsPage/PatientsPage';
 import PatientOverview from './components/PatientOverviewPage/PatientOverview';
 import AppointmentCalendar from './components/AppointmentCalendar/index';
+import SearchPatient from './components/SearchPage/Search';
 
 console.log(localStorage.getItem('MINC'));
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -18,7 +19,7 @@ root.render(
     <Route path = "/login" exact element={<DoctorLogin />}></Route>
     <Route path = "/main" exact element={<DoctorMainPage />}></Route>
     <Route path = "/main/calendar" exact element={<AppointmentCalendar />}></Route>
-
+    <Route path = "/main/search" exact element={<SearchPatient/>}></Route>
 
 
     {/* These routes are for when the family doctor is logged in (replace true with w
