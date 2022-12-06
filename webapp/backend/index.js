@@ -12,13 +12,14 @@ app.use('/', express.static('../frontend/build'));
 app.use(cors());
 router.use(express.json());
 
-router.post('/appointment', async (req,res)=>{ //insert an appointment
+router.post('/appointment/add', async (req,res)=>{ //insert an appointment
   let sqlAppointment = await query(` INSERT INTO appointment(
     startDateTime,
     endDateTime,
     notes,
     reasonforAppointment,
-    FamilyDoctorMINC,patientHealthCardNumber
+    familyDoctorMINC,
+    patientHealthCardNumber
     )
     VALUES(
     '${req.body.startDateTime}',
@@ -33,25 +34,26 @@ router.post('/appointment', async (req,res)=>{ //insert an appointment
     endDateTime,
     notes,
     reasonforAppointment,
-    FamilyDoctorMINC,patientHealthCardNumber FROM appointment WHERE startDateTime = '${req.body.startDateTime}' AND  endDateTime ='${req.body.endDateTime}' AND NOTES =  '${req.body.notes}'
-    AND reasonforAppointment = '${req.body.reasonforAppointment}' AND familyDoctorMINC = '${req.body.familyDoctorMINC}' AND patientHealthCardNumber = '${req.body.patientHealthCardNumber}'`);
+    familyDoctorMINC,patientHealthCardNumber FROM appointment WHERE startDateTime = '${req.body.startDateTime}' AND  endDateTime ='${req.body.endDateTime}' AND NOTES =  '${req.body.notes}'
+    AND reasonforAppointment = '${req.body.reasonforAppointment}' AND familyDoctorMINC = '${req.body.familyDoctorMINC}' AND patientHealthCardNumber = '${req.body.patientHealthCardNumber}'`).result;
      
   console.log(sqlAppointment)
+  console.log(req.body)
   res.send(sqlViewAppointment);
 } //returns the new inserted appointments
 )
 
-router.get('/appointment', async (req,res)=>{ //view all appointment to be used for calender
+ router.get('/appointment', async (req,res)=>{ //view all appointment to be used for calender
   
   let sqlViewAppointment = await query ( `SELECT  startDateTime,
   endDateTime,
   notes,
-  reasonforAppointment,
+   reasonforAppointment,
   FamilyDoctorMINC,patientHealthCardNumber FROM appointment`);
   res.send(sqlViewAppointment);
 
-})
-router.get('/appointment/forDoctor', async (req,res)=>{ //view all appointments for a specific doctor //mayb for calender
+ })
+router.post('/appointment/forDoctor', async (req,res)=>{ //view all appointments for a specific doctor //mayb for calender
 
   let sqlViewAppointment = await query ( `SELECT familyDoctorMINC, patientHealthCardNumber, startDateTime, endDateTime, notes, reasonforAppointment
   FROM  appointment
