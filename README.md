@@ -1,5 +1,3 @@
-# SE3309_Assignment3_2022
-
 This repo will contain the data source for your project and the sql files for each questions.
 
 The SRC folder should have the data files you used as well as any script you used to load the data within the database and any code used to generate the data. If you used excel spreadsheets, include these as well.
